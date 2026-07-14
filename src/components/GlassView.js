@@ -38,7 +38,7 @@ export default function GlassView({
 
 const styles = StyleSheet.create({
   blur: {
-    backgroundColor: Platform.OS === "android" ? "rgba(30,14,36,0.55)" : "rgba(255,255,255,0.06)",
+    backgroundColor: Platform.OS === "android" ? "rgba(30,14,36,0.32)" : "rgba(255,255,255,0.06)",
     padding: 0,
   },
 });

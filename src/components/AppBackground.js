@@ -1,6 +1,7 @@
 import React from "react";
 import { View, StyleSheet, Dimensions } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { BlurView } from "expo-blur";
 import colors from "../theme/colors";
 
 const { width: W, height: H } = Dimensions.get("window");
@@ -11,6 +12,8 @@ export default function AppBackground({ children }) {
       <LinearGradient colors={[colors.bgTop, colors.bgBottom]} style={StyleSheet.absoluteFill} />
       <View style={[styles.glow, styles.glowPink]} />
       <View style={[styles.glow, styles.glowAmber]} />
+      {/* Softens the glows into a hazy, muffled backdrop instead of solid-edged blobs */}
+      <BlurView intensity={65} tint="dark" style={StyleSheet.absoluteFill} />
       {children}
     </View>
   );
@@ -21,7 +24,7 @@ const styles = StyleSheet.create({
   glow: {
     position: "absolute",
     borderRadius: 999,
-    opacity: 0.28,
+    opacity: 0.22,
   },
   glowPink: {
     width: W * 0.9,
@@ -36,6 +39,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.amber,
     bottom: -W * 0.35,
     right: -W * 0.3,
-    opacity: 0.18,
+    opacity: 0.14,
   },
 });

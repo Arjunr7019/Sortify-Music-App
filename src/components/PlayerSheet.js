@@ -10,6 +10,7 @@ import {
   Dimensions,
   ActivityIndicator,
   Alert,
+  Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
@@ -141,9 +142,16 @@ export default function PlayerSheet() {
         ]}
         {...panResponder.panHandlers}
       >
-        <BlurView intensity={70} tint="dark" style={StyleSheet.absoluteFill}>
+        <BlurView
+          intensity={50}
+          tint="dark"
+          style={[
+            StyleSheet.absoluteFill,
+            Platform.OS === "android" && { backgroundColor: "rgba(20,8,26,0.35)" },
+          ]}
+        >
           <LinearGradient
-            colors={["rgba(229,30,124,0.22)", "rgba(240,96,63,0.14)", "rgba(5,1,7,0.55)"]}
+            colors={["rgba(229,30,124,0.14)", "rgba(240,96,63,0.09)", "rgba(5,1,7,0.28)"]}
             style={StyleSheet.absoluteFill}
           />
         </BlurView>

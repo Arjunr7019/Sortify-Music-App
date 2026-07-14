@@ -83,7 +83,7 @@ export default function SearchScreen() {
     <AppBackground>
       <View style={{ paddingTop: insets.top + 10 }}>
         <View style={styles.searchWrap}>
-          <GlassView radius={16} intensity={40} style={{ flex: 1 }}>
+          <GlassView radius={16} intensity={40} style={{ width: "100%" }}>
             <View style={styles.searchInner}>
               <Ionicons name="search" size={18} color={colors.textFaint} />
               <TextInput
