@@ -38,7 +38,7 @@ export default function GlassTabBar({ state, navigation }) {
                 <Ionicons
                   name={focused ? ICONS[route.name] : OUTLINE_ICONS[route.name]}
                   size={22}
-                  color={focused ? colors.coral : colors.textFaint}
+                  color={focused ? colors.coral : colors.onGlassFaint}
                 />
                 <Text style={[styles.label, focused && { color: colors.coral, fontWeight: "700" }]}>
                   {LABELS[route.name]}
@@ -57,5 +57,5 @@ const styles = StyleSheet.create({
   bar: {},
   row: { flexDirection: "row", paddingVertical: 10 },
   tab: { flex: 1, alignItems: "center", justifyContent: "center" },
-  label: { color: colors.textFaint, fontSize: 11, marginTop: 3 },
+  label: { color: colors.onGlassFaint, fontSize: 11, marginTop: 3 },
 });

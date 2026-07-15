@@ -19,8 +19,15 @@ export const colors = {
   textDim: "rgba(255,255,255,0.62)",
   textFaint: "rgba(255,255,255,0.38)",
 
+  // Glass panels are a white-tinted, blurred overlay (see theme/glass.js),
+  // so anything drawn ON TOP of one needs dark text instead of the white
+  // text used on the app's dark background/gradients.
+  onGlassText: "#1B0E1F",
+  onGlassDim: "rgba(27,14,31,0.68)",
+  onGlassFaint: "rgba(27,14,31,0.45)",
+
   danger: "#F0603F",
-  success: "#3FDBA0",
+  success: "#1F9C6B",
 };
 
 export default colors;

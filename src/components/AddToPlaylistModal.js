@@ -64,7 +64,7 @@ export default function AddToPlaylistModal({ visible, song, onClose }) {
               <TextInput
                 style={styles.input}
                 placeholder="New playlist name"
-                placeholderTextColor={colors.textFaint}
+                placeholderTextColor={colors.onGlassFaint}
                 value={newName}
                 onChangeText={setNewName}
                 returnKeyType="done"
@@ -93,7 +93,7 @@ export default function AddToPlaylistModal({ visible, song, onClose }) {
               ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
               ListEmptyComponent={
                 <View style={styles.emptyWrap}>
-                  <Ionicons name="albums-outline" size={26} color={colors.textFaint} />
+                  <Ionicons name="albums-outline" size={26} color={colors.onGlassFaint} />
                   <Text style={styles.empty}>
                     No playlists yet — create one above to get started.
                   </Text>
@@ -123,7 +123,7 @@ export default function AddToPlaylistModal({ visible, song, onClose }) {
                     <Ionicons
                       name={already || justAdded ? "checkmark-circle" : "add-circle-outline"}
                       size={22}
-                      color={already || justAdded ? colors.success : colors.textFaint}
+                      color={already || justAdded ? colors.success : colors.onGlassFaint}
                     />
                   </TouchableOpacity>
                 );
@@ -158,12 +158,12 @@ const styles = StyleSheet.create({
   },
   songRow: { flexDirection: "row", alignItems: "center", marginBottom: 18 },
   songArt: { width: 50, height: 50, borderRadius: 12, borderWidth: 1, borderColor: GLASS_BORDER },
-  title: { color: colors.text, fontSize: 17, fontWeight: "700" },
-  subtitle: { color: colors.textFaint, fontSize: 12, marginTop: 3 },
+  title: { color: colors.onGlassText, fontSize: 17, fontWeight: "700" },
+  subtitle: { color: colors.onGlassFaint, fontSize: 12, marginTop: 3 },
   createRow: { flexDirection: "row", alignItems: "center" },
   input: {
     flex: 1,
-    color: colors.text,
+    color: colors.onGlassText,
     backgroundColor: "rgba(255,255,255,0.10)",
     borderRadius: 12,
     paddingHorizontal: 14,
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   sectionLabel: {
-    color: colors.textFaint,
+    color: colors.onGlassFaint,
     fontSize: 11,
     fontWeight: "700",
     letterSpacing: 1,
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   emptyWrap: { alignItems: "center", paddingVertical: 22 },
-  empty: { color: colors.textFaint, fontSize: 12.5, textAlign: "center", marginTop: 10, paddingHorizontal: 20 },
+  empty: { color: colors.onGlassFaint, fontSize: 12.5, textAlign: "center", marginTop: 10, paddingHorizontal: 20 },
   plRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -209,8 +209,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  plName: { color: colors.text, fontSize: 14, fontWeight: "600" },
-  plCount: { color: colors.textFaint, fontSize: 11.5, marginTop: 2 },
+  plName: { color: colors.onGlassText, fontSize: 14, fontWeight: "600" },
+  plCount: { color: colors.onGlassFaint, fontSize: 11.5, marginTop: 2 },
   cancel: { marginTop: 18, alignItems: "center", paddingVertical: 8 },
-  cancelText: { color: colors.textDim, fontSize: 14, fontWeight: "600" },
+  cancelText: { color: colors.onGlassDim, fontSize: 14, fontWeight: "600" },
 });

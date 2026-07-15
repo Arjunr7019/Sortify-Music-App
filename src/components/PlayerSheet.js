@@ -145,20 +145,28 @@ export default function PlayerSheet() {
           style={[styles.container, { borderRadius: radius }]}
           {...panResponder.panHandlers}
         >
-          <BlurView
-            intensity={GLASS_BLUR_INTENSITY}
-            tint="light"
-            style={[
-              StyleSheet.absoluteFill,
-              Platform.OS === "android" && { backgroundColor: "rgba(255,255,255,0.16)" },
-            ]}
+          <View
+            // intensity={GLASS_BLUR_INTENSITY}
+            // tint="default"
+            // style={[
+            //   StyleSheet.absoluteFill,
+            //   {backdropFilter: "blur(19.3px)"},
+            //   Platform.OS === "android" && { backgroundColor: "rgba(255,255,255,0.16)" },
+            // ]}
+            style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.9)",
+              backdropFilter: "blur(19.3px)",
+              // borderRadius: "16px",
+              boxshadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+              border: "1px solid rgba(255, 255, 255, 0.3)"
+
+             }]}
           >
             <View style={[StyleSheet.absoluteFill, { backgroundColor: GLASS_BG }]} />
             <LinearGradient
               colors={["rgba(229,30,124,0.16)", "rgba(240,96,63,0.10)", "rgba(251,181,49,0.08)"]}
               style={StyleSheet.absoluteFill}
             />
-        </BlurView>
+        </View>
 
         {/* Mini bar */}
         <Animated.View
@@ -181,13 +189,13 @@ export default function PlayerSheet() {
             </View>
             <TouchableOpacity onPress={togglePlayPause} style={styles.miniBtn} hitSlop={8}>
               {isBuffering ? (
-                <ActivityIndicator color={colors.text} size="small" />
+                <ActivityIndicator color={colors.onGlassText} size="small" />
               ) : (
-                <Ionicons name={isPlaying ? "pause" : "play"} size={20} color={colors.text} />
+                <Ionicons name={isPlaying ? "pause" : "play"} size={20} color={colors.onGlassText} />
               )}
             </TouchableOpacity>
             <TouchableOpacity onPress={playNext} style={styles.miniBtn} hitSlop={8}>
-              <Ionicons name="play-skip-forward" size={18} color={colors.text} />
+              <Ionicons name="play-skip-forward" size={18} color={colors.onGlassText} />
             </TouchableOpacity>
           </TouchableOpacity>
         </Animated.View>
@@ -204,7 +212,7 @@ export default function PlayerSheet() {
 
           <View style={styles.expandedHeader}>
             <TouchableOpacity onPress={() => setSheetExpanded(false)} hitSlop={10}>
-              <Ionicons name="chevron-down" size={26} color={colors.text} />
+              <Ionicons name="chevron-down" size={26} color={colors.onGlassText} />
             </TouchableOpacity>
             <Text style={styles.nowPlayingLabel}>NOW PLAYING</Text>
             <View style={{ width: 26 }} />
@@ -230,7 +238,7 @@ export default function PlayerSheet() {
               maximumValue={durationMillis || 1}
               value={displayPosition}
               minimumTrackTintColor={colors.coral}
-              maximumTrackTintColor={colors.border}
+              maximumTrackTintColor={"rgba(27,14,31,0.18)"}
               thumbTintColor={colors.amber}
               onSlidingStart={() => setDragging(true)}
               onValueChange={setSliderValue}
@@ -247,7 +255,7 @@ export default function PlayerSheet() {
 
           <View style={styles.controlsRow}>
             <TouchableOpacity onPress={playPrevious} hitSlop={10}>
-              <Ionicons name="play-skip-back" size={30} color={colors.text} />
+              <Ionicons name="play-skip-back" size={30} color={colors.onGlassText} />
             </TouchableOpacity>
             <TouchableOpacity onPress={togglePlayPause} style={styles.playBtn}>
               <LinearGradient colors={colors.gradient} style={styles.playBtnGradient}>
@@ -264,7 +272,7 @@ export default function PlayerSheet() {
               </LinearGradient>
             </TouchableOpacity>
             <TouchableOpacity onPress={playNext} hitSlop={10}>
-              <Ionicons name="play-skip-forward" size={30} color={colors.text} />
+              <Ionicons name="play-skip-forward" size={30} color={colors.onGlassText} />
             </TouchableOpacity>
           </View>
 
@@ -277,7 +285,7 @@ export default function PlayerSheet() {
               <Ionicons
                 name={isFavorite(current.id) ? "heart" : "heart-outline"}
                 size={24}
-                color={isFavorite(current.id) ? colors.pink : colors.textDim}
+                color={isFavorite(current.id) ? colors.pink : colors.onGlassDim}
               />
               <Text style={styles.actionLabel}>Favorite</Text>
             </TouchableOpacity>
@@ -287,18 +295,18 @@ export default function PlayerSheet() {
               onPress={() => setShowAddToPlaylist(true)}
               hitSlop={8}
             >
-              <Ionicons name="add-circle-outline" size={24} color={colors.textDim} />
+              <Ionicons name="add-circle-outline" size={24} color={colors.onGlassDim} />
               <Text style={styles.actionLabel}>Playlist</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.actionBtn} onPress={handleDownload} hitSlop={8}>
               {downloading ? (
-                <ActivityIndicator color={colors.textDim} />
+                <ActivityIndicator color={colors.onGlassDim} />
               ) : (
                 <Ionicons
                   name={isDownloaded(current.id) ? "checkmark-circle" : "download-outline"}
                   size={24}
-                  color={isDownloaded(current.id) ? colors.success : colors.textDim}
+                  color={isDownloaded(current.id) ? colors.success : colors.onGlassDim}
                 />
               )}
               <Text style={styles.actionLabel}>
@@ -340,8 +348,8 @@ const styles = StyleSheet.create({
   },
   miniArt: { width: 44, height: 44, borderRadius: 10 },
   miniText: { flex: 1, marginLeft: 10 },
-  miniTitle: { color: colors.text, fontSize: 13.5, fontWeight: "700" },
-  miniArtist: { color: colors.textFaint, fontSize: 11, marginTop: 1 },
+  miniTitle: { color: colors.onGlassText, fontSize: 13.5, fontWeight: "700" },
+  miniArtist: { color: colors.onGlassFaint, fontSize: 11, marginTop: 1 },
   miniBtn: { paddingHorizontal: 8, paddingVertical: 6 },
 
   expandedWrap: { flex: 1, paddingHorizontal: 24 },
@@ -350,7 +358,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 4,
     borderRadius: 2,
-    backgroundColor: colors.borderStrong,
+    backgroundColor: "rgba(27,14,31,0.25)",
     marginBottom: 6,
   },
   expandedHeader: {
@@ -360,7 +368,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   nowPlayingLabel: {
-    color: colors.textFaint,
+    color: colors.onGlassFaint,
     fontSize: 12,
     fontWeight: "700",
     letterSpacing: 2,
@@ -374,14 +382,14 @@ const styles = StyleSheet.create({
     height: SCREEN_W - 88,
     borderRadius: 24,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: GLASS_BORDER,
   },
   infoWrap: { marginTop: 28, alignItems: "center" },
-  songName: { color: colors.text, fontSize: 21, fontWeight: "700", maxWidth: "90%" },
-  songArtist: { color: colors.textDim, fontSize: 14, marginTop: 6 },
+  songName: { color: colors.onGlassText, fontSize: 21, fontWeight: "700", maxWidth: "90%" },
+  songArtist: { color: colors.onGlassDim, fontSize: 14, marginTop: 6 },
   progressWrap: { marginTop: 22 },
   timeRow: { flexDirection: "row", justifyContent: "space-between", marginTop: -4 },
-  timeText: { color: colors.textFaint, fontSize: 11.5 },
+  timeText: { color: colors.onGlassFaint, fontSize: 11.5 },
   controlsRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -402,5 +410,5 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   actionBtn: { alignItems: "center" },
-  actionLabel: { color: colors.textFaint, fontSize: 11, marginTop: 6 },
+  actionLabel: { color: colors.onGlassFaint, fontSize: 11, marginTop: 6 },
 });

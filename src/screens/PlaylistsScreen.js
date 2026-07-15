@@ -59,7 +59,7 @@ export default function PlaylistsScreen({ navigation }) {
             onPress={() => navigation.navigate("PlaylistDetail", { playlistId: item.id })}
           >
             <GlassView radius={18}>
-              <LinearGradient colors={colors.gradientSoft} style={styles.artwork}>
+              <LinearGradient colors={colors.gradient} style={styles.artwork}>
                 <Ionicons name="musical-notes" size={30} color="rgba(255,255,255,0.9)" />
               </LinearGradient>
               <View style={styles.cardFooter}>
@@ -92,7 +92,7 @@ export default function PlaylistsScreen({ navigation }) {
               <TextInput
                 style={styles.input}
                 placeholder="e.g. Late night drive"
-                placeholderTextColor={colors.textFaint}
+                placeholderTextColor={colors.onGlassFaint}
                 value={name}
                 onChangeText={setName}
                 autoFocus
@@ -136,8 +136,8 @@ const styles = StyleSheet.create({
   card: { width: "48%", marginBottom: 16 },
   artwork: { height: 130, alignItems: "center", justifyContent: "center" },
   cardFooter: { padding: 12 },
-  cardName: { color: colors.text, fontSize: 14, fontWeight: "700" },
-  cardCount: { color: colors.textFaint, fontSize: 11, marginTop: 3 },
+  cardName: { color: colors.onGlassText, fontSize: 14, fontWeight: "700" },
+  cardCount: { color: colors.onGlassFaint, fontSize: 11, marginTop: 3 },
   backdrop: { flex: 1, backgroundColor: "rgba(5,1,7,0.55)", justifyContent: "center" },
   modalWrap: { paddingHorizontal: 24 },
   modalHeader: { flexDirection: "row", alignItems: "center", marginBottom: 18 },
@@ -148,10 +148,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  modalTitle: { color: colors.text, fontSize: 16, fontWeight: "700" },
-  modalSubtitle: { color: colors.textFaint, fontSize: 12, marginTop: 2 },
+  modalTitle: { color: colors.onGlassText, fontSize: 16, fontWeight: "700" },
+  modalSubtitle: { color: colors.onGlassFaint, fontSize: 12, marginTop: 2 },
   input: {
-    color: colors.text,
+    color: colors.onGlassText,
     backgroundColor: "rgba(255,255,255,0.10)",
     borderRadius: 12,
     paddingHorizontal: 14,
@@ -163,6 +163,6 @@ const styles = StyleSheet.create({
   modalActions: { flexDirection: "row", alignItems: "center", marginTop: 18, gap: 12 },
   secondaryBtn: { paddingVertical: 14, paddingHorizontal: 16 },
   primaryBtn: { borderRadius: 12, paddingVertical: 14, alignItems: "center" },
-  modalCancel: { color: colors.textDim, fontSize: 14, fontWeight: "600" },
+  modalCancel: { color: colors.onGlassDim, fontSize: 14, fontWeight: "600" },
   modalCreate: { color: "#fff", fontSize: 14, fontWeight: "700" },
 });

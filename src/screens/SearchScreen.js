@@ -85,11 +85,11 @@ export default function SearchScreen() {
         <View style={styles.searchWrap}>
           <GlassView radius={16} intensity={40} style={{ width: "100%" }}>
             <View style={styles.searchInner}>
-              <Ionicons name="search" size={18} color={colors.textFaint} />
+              <Ionicons name="search" size={18} color={colors.onGlassFaint} />
               <TextInput
                 style={styles.input}
                 placeholder="Songs, albums, artists..."
-                placeholderTextColor={colors.textFaint}
+                placeholderTextColor={colors.onGlassFaint}
                 value={query}
                 onChangeText={setQuery}
                 returnKeyType="search"
@@ -99,7 +99,7 @@ export default function SearchScreen() {
                 <ActivityIndicator size="small" color={colors.coral} />
               ) : query.length > 0 ? (
                 <TouchableOpacity onPress={() => setQuery("")} hitSlop={8}>
-                  <Ionicons name="close-circle" size={18} color={colors.textFaint} />
+                  <Ionicons name="close-circle" size={18} color={colors.onGlassFaint} />
                 </TouchableOpacity>
               ) : null}
             </View>
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 12,
   },
-  input: { flex: 1, color: colors.text, fontSize: 14.5, marginLeft: 10 },
+  input: { flex: 1, color: colors.onGlassText, fontSize: 14.5, marginLeft: 10 },
   placeholderWrap: { alignItems: "center", marginTop: 90, paddingHorizontal: 40 },
   placeholderText: {
     color: colors.textFaint,

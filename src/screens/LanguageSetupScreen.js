@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   chipInactive: { paddingVertical: 14, alignItems: "center" },
-  chipText: { color: colors.textDim, fontSize: 14, fontWeight: "600" },
+  chipText: { color: colors.onGlassDim, fontSize: 14, fontWeight: "600" },
   chipTextActive: { color: "#fff", fontSize: 14, fontWeight: "700" },
   continueBtn: { marginTop: "auto", borderRadius: 18, overflow: "hidden" },
   continueGradient: { paddingVertical: 16, alignItems: "center" },

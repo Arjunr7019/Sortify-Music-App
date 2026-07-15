@@ -50,7 +50,7 @@ export default function LibraryScreen({ navigation }) {
                 <Ionicons
                   name="chevron-forward"
                   size={18}
-                  color={colors.textFaint}
+                  color={colors.onGlassFaint}
                   style={{ marginLeft: 6 }}
                 />
               </View>
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  tileLabel: { color: colors.text, fontSize: 16, fontWeight: "700" },
-  tileDesc: { color: colors.textFaint, fontSize: 12, marginTop: 2 },
-  tileCount: { color: colors.textDim, fontSize: 14, fontWeight: "600" },
+  tileLabel: { color: colors.onGlassText, fontSize: 16, fontWeight: "700" },
+  tileDesc: { color: colors.onGlassFaint, fontSize: 12, marginTop: 2 },
+  tileCount: { color: colors.onGlassDim, fontSize: 14, fontWeight: "600" },
 });

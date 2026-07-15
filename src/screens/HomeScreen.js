@@ -119,8 +119,8 @@ export default function HomeScreen({ navigation }) {
             ) : (
               <GlassView radius={16} style={styles.emptyPlaylists}>
                 <View style={styles.emptyPlaylistsInner}>
-                  <Ionicons name="albums-outline" size={20} color={colors.textFaint} />
-                  <Text style={styles.emptyText}>
+                  <Ionicons name="albums-outline" size={20} color={colors.onGlassFaint} />
+                  <Text style={styles.emptyTextOnGlass}>
                     Tap the + icon on any song to start your first playlist.
                   </Text>
                 </View>
@@ -176,4 +176,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   emptyText: { color: colors.textFaint, fontSize: 12, marginLeft: 10, flex: 1, paddingHorizontal: 20 },
+  emptyTextOnGlass: { color: colors.onGlassFaint, fontSize: 12, marginLeft: 10, flex: 1 },
 });
