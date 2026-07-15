@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AppBackground from "../components/AppBackground";
 import GlassView from "../components/GlassView";
 import colors from "../theme/colors";
+import { GLASS_BORDER } from "../theme/glass";
 import { useLibrary } from "../context/LibraryContext";
 
 export default function PlaylistsScreen({ navigation }) {
@@ -22,6 +23,11 @@ export default function PlaylistsScreen({ navigation }) {
     setShowCreate(false);
   };
 
+  const closeModal = () => {
+    setShowCreate(false);
+    setName("");
+  };
+
   return (
     <AppBackground>
       <View style={[styles.header, { paddingTop: insets.top + 10 }]}>
@@ -30,7 +36,7 @@ export default function PlaylistsScreen({ navigation }) {
         </TouchableOpacity>
         <Text style={styles.title}>Playlists</Text>
         <TouchableOpacity onPress={() => setShowCreate(true)} hitSlop={10}>
-          <Ionicons name="add" size={26} color={colors.text} />
+          <Ionicons name="add-circle" size={26} color={colors.coral} />
         </TouchableOpacity>
       </View>
 
@@ -69,25 +75,43 @@ export default function PlaylistsScreen({ navigation }) {
         )}
       />
 
-      <Modal visible={showCreate} transparent animationType="fade" onRequestClose={() => setShowCreate(false)}>
-        <Pressable style={styles.backdrop} onPress={() => setShowCreate(false)}>
+      <Modal visible={showCreate} transparent animationType="fade" onRequestClose={closeModal}>
+        <Pressable style={styles.backdrop} onPress={closeModal}>
           <Pressable style={styles.modalWrap} onPress={(e) => e.stopPropagation()}>
-            <GlassView intensity={60} radius={22} style={{ padding: 20 }}>
-              <Text style={styles.modalTitle}>New playlist</Text>
+            <GlassView radius={22} style={{ padding: 22 }}>
+              <View style={styles.modalHeader}>
+                <LinearGradient colors={colors.gradient} style={styles.modalIcon}>
+                  <Ionicons name="add" size={22} color="#fff" />
+                </LinearGradient>
+                <View style={{ marginLeft: 12, flex: 1 }}>
+                  <Text style={styles.modalTitle}>New playlist</Text>
+                  <Text style={styles.modalSubtitle}>Give your mix a name</Text>
+                </View>
+              </View>
+
               <TextInput
                 style={styles.input}
-                placeholder="Playlist name"
+                placeholder="e.g. Late night drive"
                 placeholderTextColor={colors.textFaint}
                 value={name}
                 onChangeText={setName}
                 autoFocus
+                returnKeyType="done"
+                onSubmitEditing={handleCreate}
               />
+
               <View style={styles.modalActions}>
-                <TouchableOpacity onPress={() => setShowCreate(false)} style={styles.modalBtn}>
+                <TouchableOpacity onPress={closeModal} style={styles.secondaryBtn}>
                   <Text style={styles.modalCancel}>Cancel</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={handleCreate} style={styles.modalBtn}>
-                  <Text style={styles.modalCreate}>Create</Text>
+                <TouchableOpacity
+                  onPress={handleCreate}
+                  disabled={!name.trim()}
+                  style={{ opacity: name.trim() ? 1 : 0.4, flex: 1 }}
+                >
+                  <LinearGradient colors={colors.gradient} style={styles.primaryBtn}>
+                    <Text style={styles.modalCreate}>Create playlist</Text>
+                  </LinearGradient>
                 </TouchableOpacity>
               </View>
             </GlassView>
@@ -114,21 +138,31 @@ const styles = StyleSheet.create({
   cardFooter: { padding: 12 },
   cardName: { color: colors.text, fontSize: 14, fontWeight: "700" },
   cardCount: { color: colors.textFaint, fontSize: 11, marginTop: 3 },
-  backdrop: { flex: 1, backgroundColor: "rgba(5,1,7,0.6)", justifyContent: "center" },
+  backdrop: { flex: 1, backgroundColor: "rgba(5,1,7,0.55)", justifyContent: "center" },
   modalWrap: { paddingHorizontal: 24 },
-  modalTitle: { color: colors.text, fontSize: 16, fontWeight: "700", marginBottom: 14 },
+  modalHeader: { flexDirection: "row", alignItems: "center", marginBottom: 18 },
+  modalIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  modalTitle: { color: colors.text, fontSize: 16, fontWeight: "700" },
+  modalSubtitle: { color: colors.textFaint, fontSize: 12, marginTop: 2 },
   input: {
     color: colors.text,
-    backgroundColor: colors.surface,
+    backgroundColor: "rgba(255,255,255,0.10)",
     borderRadius: 12,
     paddingHorizontal: 14,
-    paddingVertical: 10,
+    paddingVertical: 12,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: GLASS_BORDER,
     fontSize: 14,
   },
-  modalActions: { flexDirection: "row", justifyContent: "flex-end", marginTop: 16, gap: 18 },
-  modalBtn: { paddingVertical: 6, paddingHorizontal: 4 },
+  modalActions: { flexDirection: "row", alignItems: "center", marginTop: 18, gap: 12 },
+  secondaryBtn: { paddingVertical: 14, paddingHorizontal: 16 },
+  primaryBtn: { borderRadius: 12, paddingVertical: 14, alignItems: "center" },
   modalCancel: { color: colors.textDim, fontSize: 14, fontWeight: "600" },
-  modalCreate: { color: colors.coral, fontSize: 14, fontWeight: "700" },
+  modalCreate: { color: "#fff", fontSize: 14, fontWeight: "700" },
 });

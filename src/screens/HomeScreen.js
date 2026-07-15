@@ -12,6 +12,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AppBackground from "../components/AppBackground";
+import GlassView from "../components/GlassView";
 import SectionHeader from "../components/SectionHeader";
 import SongCard from "../components/SongCard";
 import PlaylistCard from "../components/PlaylistCard";
@@ -116,12 +117,14 @@ export default function HomeScreen({ navigation }) {
                 )}
               />
             ) : (
-              <View style={styles.emptyPlaylists}>
-                <Ionicons name="albums-outline" size={20} color={colors.textFaint} />
-                <Text style={styles.emptyText}>
-                  Tap the + icon on any song to start your first playlist.
-                </Text>
-              </View>
+              <GlassView radius={16} style={styles.emptyPlaylists}>
+                <View style={styles.emptyPlaylistsInner}>
+                  <Ionicons name="albums-outline" size={20} color={colors.textFaint} />
+                  <Text style={styles.emptyText}>
+                    Tap the + icon on any song to start your first playlist.
+                  </Text>
+                </View>
+              </GlassView>
             )}
           </>
         }
@@ -166,11 +169,9 @@ const styles = StyleSheet.create({
   greeting: { color: colors.text, fontSize: 17, fontWeight: "700" },
   emptyPlaylists: {
     marginHorizontal: 20,
+  },
+  emptyPlaylistsInner: {
     padding: 16,
-    borderRadius: 16,
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
     flexDirection: "row",
     alignItems: "center",
   },

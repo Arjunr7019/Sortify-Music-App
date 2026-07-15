@@ -18,6 +18,7 @@ import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import colors from "../theme/colors";
+import { GLASS_BG, GLASS_BORDER, GLASS_BLUR_INTENSITY, glassShadow } from "../theme/glass";
 import { usePlayer } from "../context/PlayerContext";
 import { useLibrary } from "../context/LibraryContext";
 import { formatMillis } from "../utils/format";
@@ -131,29 +132,32 @@ export default function PlayerSheet() {
     <>
       <Animated.View
         style={[
-          styles.container,
+          styles.shadowWrap,
           {
             bottom,
             height,
-            borderRadius: radius,
             left: horizontalMargin,
             right: horizontalMargin,
           },
         ]}
-        {...panResponder.panHandlers}
       >
-        <BlurView
-          intensity={50}
-          tint="dark"
-          style={[
-            StyleSheet.absoluteFill,
-            Platform.OS === "android" && { backgroundColor: "rgba(20,8,26,0.35)" },
-          ]}
+        <Animated.View
+          style={[styles.container, { borderRadius: radius }]}
+          {...panResponder.panHandlers}
         >
-          <LinearGradient
-            colors={["rgba(229,30,124,0.14)", "rgba(240,96,63,0.09)", "rgba(5,1,7,0.28)"]}
-            style={StyleSheet.absoluteFill}
-          />
+          <BlurView
+            intensity={GLASS_BLUR_INTENSITY}
+            tint="light"
+            style={[
+              StyleSheet.absoluteFill,
+              Platform.OS === "android" && { backgroundColor: "rgba(255,255,255,0.16)" },
+            ]}
+          >
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: GLASS_BG }]} />
+            <LinearGradient
+              colors={["rgba(229,30,124,0.16)", "rgba(240,96,63,0.10)", "rgba(251,181,49,0.08)"]}
+              style={StyleSheet.absoluteFill}
+            />
         </BlurView>
 
         {/* Mini bar */}
@@ -303,6 +307,7 @@ export default function PlayerSheet() {
             </TouchableOpacity>
           </View>
         </Animated.View>
+        </Animated.View>
       </Animated.View>
 
       <AddToPlaylistModal
@@ -315,12 +320,16 @@ export default function PlayerSheet() {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  shadowWrap: {
     position: "absolute",
+    zIndex: 50,
+    ...glassShadow,
+  },
+  container: {
+    flex: 1,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: colors.border,
-    zIndex: 50,
+    borderColor: GLASS_BORDER,
   },
   miniWrap: { ...StyleSheet.absoluteFillObject },
   miniTouchable: {
