@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import {
   View,
   Text,
@@ -10,16 +10,16 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import AppBackground from "../components/AppBackground";
-import GlassView from "../components/GlassView";
+import AppScreen from "../components/AppScreen";
+import Header from "../components/Header";
 import SongListRow from "../components/SongListRow";
-import colors from "../theme/colors";
+import { useAppTheme } from "../context/ThemeContext";
 import { usePlayer } from "../context/PlayerContext";
 import { globalSearch, getArtistSongs, searchSongs, normalizeSong } from "../api/musicApi";
 
 export default function SearchScreen() {
-  const insets = useSafeAreaInsets();
+  const { theme } = useAppTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
   const { playSong } = usePlayer();
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
@@ -80,50 +80,43 @@ export default function SearchScreen() {
   const hasResults = songs.length || albums.length || artists.length;
 
   return (
-    <AppBackground>
-      <View style={{ paddingTop: insets.top + 10 }}>
-        <View style={styles.searchWrap}>
-          <GlassView radius={16} intensity={40} style={{ width: "100%" }}>
-            <View style={styles.searchInner}>
-              <Ionicons name="search" size={18} color={colors.onGlassFaint} />
-              <TextInput
-                style={styles.input}
-                placeholder="Songs, albums, artists..."
-                placeholderTextColor={colors.onGlassFaint}
-                value={query}
-                onChangeText={setQuery}
-                returnKeyType="search"
-                onSubmitEditing={() => runSearch(query)}
-              />
-              {loading ? (
-                <ActivityIndicator size="small" color={colors.coral} />
-              ) : query.length > 0 ? (
-                <TouchableOpacity onPress={() => setQuery("")} hitSlop={8}>
-                  <Ionicons name="close-circle" size={18} color={colors.onGlassFaint} />
-                </TouchableOpacity>
-              ) : null}
-            </View>
-          </GlassView>
-        </View>
+    <AppScreen>
+      <Header />
+
+      <View style={styles.searchWrap}>
+        <Ionicons name="search" size={18} color={theme.textFaint} />
+        <TextInput
+          style={styles.input}
+          placeholder="Songs, Albums or Artists"
+          placeholderTextColor={theme.textFaint}
+          value={query}
+          onChangeText={setQuery}
+          returnKeyType="search"
+          onSubmitEditing={() => runSearch(query)}
+        />
+        {loading ? (
+          <ActivityIndicator size="small" color={theme.accent} />
+        ) : query.length > 0 ? (
+          <TouchableOpacity onPress={() => setQuery("")} hitSlop={8}>
+            <Ionicons name="close-circle" size={18} color={theme.textFaint} />
+          </TouchableOpacity>
+        ) : null}
       </View>
 
       {!hasQuery ? (
         <View style={styles.placeholderWrap}>
-          <Ionicons name="musical-notes-outline" size={40} color={colors.textFaint} />
-          <Text style={styles.placeholderText}>
-            Search for a song, an album, or an artist to get started.
-          </Text>
+          <Text style={styles.placeholderText}>result area</Text>
         </View>
       ) : !loading && !hasResults ? (
         <View style={styles.placeholderWrap}>
-          <Ionicons name="sad-outline" size={40} color={colors.textFaint} />
+          <Ionicons name="sad-outline" size={36} color={theme.textFaint} />
           <Text style={styles.placeholderText}>No results for "{query}"</Text>
         </View>
       ) : (
         <FlatList
           data={songs}
           keyExtractor={(item, idx) => `song_${item.id}_${idx}`}
-          contentContainerStyle={{ paddingBottom: 160 + insets.bottom, paddingTop: 8 }}
+          contentContainerStyle={{ paddingBottom: 160, paddingTop: 8 }}
           ListHeaderComponent={
             <>
               {artists.length > 0 && (
@@ -141,7 +134,7 @@ export default function SearchScreen() {
                           source={{ uri: item.image?.[item.image.length - 1]?.url }}
                           style={styles.artistImg}
                         />
-                        <Text style={styles.artistName} numberOfLines={1}>
+                        <Text style={styles.chipName} numberOfLines={1}>
                           {item.title}
                         </Text>
                       </TouchableOpacity>
@@ -165,7 +158,7 @@ export default function SearchScreen() {
                           source={{ uri: item.image?.[item.image.length - 1]?.url }}
                           style={styles.albumImg}
                         />
-                        <Text style={styles.artistName} numberOfLines={1}>
+                        <Text style={styles.chipName} numberOfLines={1}>
                           {item.title}
                         </Text>
                       </TouchableOpacity>
@@ -184,50 +177,42 @@ export default function SearchScreen() {
           }
         />
       )}
-    </AppBackground>
+    </AppScreen>
   );
 }
 
-const styles = StyleSheet.create({
-  searchWrap: { paddingHorizontal: 20, marginBottom: 6 },
-  searchInner: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-  },
-  input: { flex: 1, color: colors.onGlassText, fontSize: 14.5, marginLeft: 10 },
-  placeholderWrap: { alignItems: "center", marginTop: 90, paddingHorizontal: 40 },
-  placeholderText: {
-    color: colors.textFaint,
-    fontSize: 13,
-    marginTop: 14,
-    textAlign: "center",
-    lineHeight: 19,
-  },
-  sectionLabel: {
-    color: colors.text,
-    fontSize: 15,
-    fontWeight: "700",
-    marginLeft: 20,
-    marginTop: 18,
-    marginBottom: 10,
-  },
-  artistCard: { width: 90, marginRight: 14, alignItems: "center" },
-  artistImg: {
-    width: 76,
-    height: 76,
-    borderRadius: 38,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  albumCard: { width: 110, marginRight: 14 },
-  albumImg: {
-    width: 110,
-    height: 110,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  artistName: { color: colors.textDim, fontSize: 11.5, marginTop: 6, textAlign: "center" },
-});
+const makeStyles = (theme) =>
+  StyleSheet.create({
+    searchWrap: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginHorizontal: 20,
+      marginBottom: 6,
+      backgroundColor: theme.surface,
+      borderRadius: 12,
+      paddingHorizontal: 14,
+      paddingVertical: 12,
+    },
+    input: { flex: 1, color: theme.text, fontSize: 14.5, marginLeft: 10 },
+    placeholderWrap: { alignItems: "center", marginTop: 90, paddingHorizontal: 40 },
+    placeholderText: {
+      color: theme.textFaint,
+      fontSize: 13,
+      marginTop: 14,
+      textAlign: "center",
+      lineHeight: 19,
+    },
+    sectionLabel: {
+      color: theme.text,
+      fontSize: 15,
+      fontWeight: "700",
+      marginLeft: 20,
+      marginTop: 18,
+      marginBottom: 10,
+    },
+    artistCard: { width: 90, marginRight: 14, alignItems: "center" },
+    artistImg: { width: 76, height: 76, borderRadius: 38, backgroundColor: theme.placeholder },
+    albumCard: { width: 110, marginRight: 14 },
+    albumImg: { width: 110, height: 110, borderRadius: 14, backgroundColor: theme.placeholder },
+    chipName: { color: theme.textSecondary, fontSize: 11.5, marginTop: 6, textAlign: "center" },
+  });

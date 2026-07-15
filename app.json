@@ -24,7 +24,11 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0B0410"
       },
-      "package": "com.sortify.app"
+      "package": "com.sortify.app",
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -32,6 +36,11 @@
     "plugins": [
       "expo-av",
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "48314064-1bf1-483a-80b2-2fb7ae433e28"
+      }
+    }
   }
 }

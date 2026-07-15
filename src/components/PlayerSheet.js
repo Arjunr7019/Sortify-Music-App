@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useMemo } from "react";
 import {
   Animated,
   PanResponder,
@@ -10,15 +10,11 @@ import {
   Dimensions,
   ActivityIndicator,
   Alert,
-  Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
-import { BlurView } from "expo-blur";
-import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import colors from "../theme/colors";
-import { GLASS_BG, GLASS_BORDER, GLASS_BLUR_INTENSITY, glassShadow } from "../theme/glass";
+import { useAppTheme } from "../context/ThemeContext";
 import { usePlayer } from "../context/PlayerContext";
 import { useLibrary } from "../context/LibraryContext";
 import { formatMillis } from "../utils/format";
@@ -26,11 +22,13 @@ import { downloadSongFile } from "../utils/download";
 import AddToPlaylistModal from "./AddToPlaylistModal";
 
 const { height: SCREEN_H, width: SCREEN_W } = Dimensions.get("window");
-const MINI_HEIGHT = 64;
-const TAB_BAR_HEIGHT = 62;
+const MINI_HEIGHT = 66;
+const TAB_BAR_HEIGHT = 58;
 
 export default function PlayerSheet() {
   const insets = useSafeAreaInsets();
+  const { theme } = useAppTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
   const {
     current,
     isPlaying,
@@ -88,19 +86,11 @@ export default function PlayerSheet() {
 
   const bottom = progress.interpolate({
     inputRange: [0, 1],
-    outputRange: [TAB_BAR_HEIGHT + 8, 0],
+    outputRange: [TAB_BAR_HEIGHT + insets.bottom, 0],
   });
   const height = progress.interpolate({
     inputRange: [0, 1],
     outputRange: [MINI_HEIGHT, SCREEN_H],
-  });
-  const radius = progress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [18, 0],
-  });
-  const horizontalMargin = progress.interpolate({
-    inputRange: [0, 1],
-    outputRange: [12, 0],
   });
   const miniOpacity = progress.interpolate({
     inputRange: [0, 0.4],
@@ -114,6 +104,7 @@ export default function PlayerSheet() {
   });
 
   const displayPosition = dragging ? sliderValue : positionMillis;
+  const progressFraction = durationMillis ? Math.min(1, displayPosition / durationMillis) : 0;
 
   const handleDownload = async () => {
     if (isDownloaded(current.id) || downloading) return;
@@ -130,44 +121,7 @@ export default function PlayerSheet() {
 
   return (
     <>
-      <Animated.View
-        style={[
-          styles.shadowWrap,
-          {
-            bottom,
-            height,
-            left: horizontalMargin,
-            right: horizontalMargin,
-          },
-        ]}
-      >
-        <Animated.View
-          style={[styles.container, { borderRadius: radius }]}
-          {...panResponder.panHandlers}
-        >
-          <View
-            // intensity={GLASS_BLUR_INTENSITY}
-            // tint="default"
-            // style={[
-            //   StyleSheet.absoluteFill,
-            //   {backdropFilter: "blur(19.3px)"},
-            //   Platform.OS === "android" && { backgroundColor: "rgba(255,255,255,0.16)" },
-            // ]}
-            style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(255,255,255,0.9)",
-              backdropFilter: "blur(19.3px)",
-              // borderRadius: "16px",
-              boxshadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
-              border: "1px solid rgba(255, 255, 255, 0.3)"
-
-             }]}
-          >
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: GLASS_BG }]} />
-            <LinearGradient
-              colors={["rgba(229,30,124,0.16)", "rgba(240,96,63,0.10)", "rgba(251,181,49,0.08)"]}
-              style={StyleSheet.absoluteFill}
-            />
-        </View>
-
+      <Animated.View style={[styles.container, { bottom, height }]} {...panResponder.panHandlers}>
         {/* Mini bar */}
         <Animated.View
           style={[styles.miniWrap, { opacity: miniOpacity }]}
@@ -187,36 +141,33 @@ export default function PlayerSheet() {
                 {current.artist}
               </Text>
             </View>
-            <TouchableOpacity onPress={togglePlayPause} style={styles.miniBtn} hitSlop={8}>
+            <TouchableOpacity onPress={togglePlayPause} style={styles.miniPlayBtn} hitSlop={8}>
               {isBuffering ? (
-                <ActivityIndicator color={colors.onGlassText} size="small" />
+                <ActivityIndicator color={theme.accentOn} size="small" />
               ) : (
-                <Ionicons name={isPlaying ? "pause" : "play"} size={20} color={colors.onGlassText} />
+                <Ionicons name={isPlaying ? "pause" : "play"} size={18} color={theme.accentOn} />
               )}
             </TouchableOpacity>
             <TouchableOpacity onPress={playNext} style={styles.miniBtn} hitSlop={8}>
-              <Ionicons name="play-skip-forward" size={18} color={colors.onGlassText} />
+              <Ionicons name="play-skip-forward" size={18} color={theme.accent} />
             </TouchableOpacity>
           </TouchableOpacity>
+          <View style={styles.miniProgressTrack}>
+            <View style={[styles.miniProgressFill, { width: `${progressFraction * 100}%` }]} />
+          </View>
         </Animated.View>
 
         {/* Expanded full player */}
         <Animated.View
           style={[
             styles.expandedWrap,
-            { opacity: expandedOpacity, paddingTop: insets.top + 10 },
+            { opacity: expandedOpacity, paddingTop: insets.top + 14 },
           ]}
           pointerEvents={sheetExpanded ? "auto" : "none"}
         >
-          <View style={styles.dragHandle} />
-
-          <View style={styles.expandedHeader}>
-            <TouchableOpacity onPress={() => setSheetExpanded(false)} hitSlop={10}>
-              <Ionicons name="chevron-down" size={26} color={colors.onGlassText} />
-            </TouchableOpacity>
-            <Text style={styles.nowPlayingLabel}>NOW PLAYING</Text>
-            <View style={{ width: 26 }} />
-          </View>
+          <TouchableOpacity onPress={() => setSheetExpanded(false)} hitSlop={10} style={styles.collapseBtn}>
+            <Ionicons name="chevron-down" size={26} color={theme.text} />
+          </TouchableOpacity>
 
           <View style={styles.bannerWrap}>
             <Image source={{ uri: current.image }} style={styles.banner} />
@@ -231,15 +182,16 @@ export default function PlayerSheet() {
             </Text>
           </View>
 
-          <View style={styles.progressWrap}>
+          <View style={styles.progressRow}>
+            <Text style={styles.timeText}>{formatMillis(displayPosition)}</Text>
             <Slider
-              style={{ width: "100%", height: 32 }}
+              style={{ flex: 1, height: 32, marginHorizontal: 8 }}
               minimumValue={0}
               maximumValue={durationMillis || 1}
               value={displayPosition}
-              minimumTrackTintColor={colors.coral}
-              maximumTrackTintColor={"rgba(27,14,31,0.18)"}
-              thumbTintColor={colors.amber}
+              minimumTrackTintColor={theme.accent}
+              maximumTrackTintColor={theme.surfaceAlt}
+              thumbTintColor={theme.accent}
               onSlidingStart={() => setDragging(true)}
               onValueChange={setSliderValue}
               onSlidingComplete={(v) => {
@@ -247,74 +199,66 @@ export default function PlayerSheet() {
                 seekTo(v);
               }}
             />
-            <View style={styles.timeRow}>
-              <Text style={styles.timeText}>{formatMillis(displayPosition)}</Text>
-              <Text style={styles.timeText}>{formatMillis(durationMillis)}</Text>
-            </View>
+            <Text style={styles.timeText}>{formatMillis(durationMillis)}</Text>
           </View>
 
           <View style={styles.controlsRow}>
             <TouchableOpacity onPress={playPrevious} hitSlop={10}>
-              <Ionicons name="play-skip-back" size={30} color={colors.onGlassText} />
+              <Ionicons name="play-skip-back" size={28} color={theme.accent} />
             </TouchableOpacity>
             <TouchableOpacity onPress={togglePlayPause} style={styles.playBtn}>
-              <LinearGradient colors={colors.gradient} style={styles.playBtnGradient}>
-                {isBuffering ? (
-                  <ActivityIndicator color="#fff" />
-                ) : (
-                  <Ionicons
-                    name={isPlaying ? "pause" : "play"}
-                    size={30}
-                    color="#fff"
-                    style={{ marginLeft: isPlaying ? 0 : 3 }}
-                  />
-                )}
-              </LinearGradient>
+              {isBuffering ? (
+                <ActivityIndicator color={theme.accentOn} />
+              ) : (
+                <Ionicons
+                  name={isPlaying ? "pause" : "play"}
+                  size={28}
+                  color={theme.accentOn}
+                  style={{ marginLeft: isPlaying ? 0 : 3 }}
+                />
+              )}
             </TouchableOpacity>
             <TouchableOpacity onPress={playNext} hitSlop={10}>
-              <Ionicons name="play-skip-forward" size={30} color={colors.onGlassText} />
+              <Ionicons name="play-skip-forward" size={28} color={theme.accent} />
             </TouchableOpacity>
           </View>
 
           <View style={styles.actionsRow}>
-            <TouchableOpacity
-              style={styles.actionBtn}
-              onPress={() => toggleFavorite(current)}
-              hitSlop={8}
-            >
-              <Ionicons
-                name={isFavorite(current.id) ? "heart" : "heart-outline"}
-                size={24}
-                color={isFavorite(current.id) ? colors.pink : colors.onGlassDim}
-              />
-              <Text style={styles.actionLabel}>Favorite</Text>
+            <TouchableOpacity style={styles.actionBtn} onPress={() => toggleFavorite(current)} hitSlop={8}>
+              <View style={styles.actionIconWrap}>
+                <Ionicons
+                  name={isFavorite(current.id) ? "heart" : "heart-outline"}
+                  size={20}
+                  color={isFavorite(current.id) ? theme.accent : theme.textSecondary}
+                />
+              </View>
+              <Text style={styles.actionLabel}>favourites</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.actionBtn}
-              onPress={() => setShowAddToPlaylist(true)}
-              hitSlop={8}
-            >
-              <Ionicons name="add-circle-outline" size={24} color={colors.onGlassDim} />
-              <Text style={styles.actionLabel}>Playlist</Text>
+            <TouchableOpacity style={styles.actionBtn} onPress={() => setShowAddToPlaylist(true)} hitSlop={8}>
+              <View style={styles.actionIconWrap}>
+                <Ionicons name="add" size={20} color={theme.textSecondary} />
+              </View>
+              <Text style={styles.actionLabel}>playlists</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.actionBtn} onPress={handleDownload} hitSlop={8}>
-              {downloading ? (
-                <ActivityIndicator color={colors.onGlassDim} />
-              ) : (
-                <Ionicons
-                  name={isDownloaded(current.id) ? "checkmark-circle" : "download-outline"}
-                  size={24}
-                  color={isDownloaded(current.id) ? colors.success : colors.onGlassDim}
-                />
-              )}
+              <View style={styles.actionIconWrap}>
+                {downloading ? (
+                  <ActivityIndicator color={theme.textSecondary} size="small" />
+                ) : (
+                  <Ionicons
+                    name={isDownloaded(current.id) ? "checkmark" : "download-outline"}
+                    size={20}
+                    color={isDownloaded(current.id) ? theme.success : theme.textSecondary}
+                  />
+                )}
+              </View>
               <Text style={styles.actionLabel}>
-                {isDownloaded(current.id) ? "Saved" : "Download"}
+                {isDownloaded(current.id) ? "saved" : "download"}
               </Text>
             </TouchableOpacity>
           </View>
-        </Animated.View>
         </Animated.View>
       </Animated.View>
 
@@ -327,88 +271,72 @@ export default function PlayerSheet() {
   );
 }
 
-const styles = StyleSheet.create({
-  shadowWrap: {
-    position: "absolute",
-    zIndex: 50,
-    ...glassShadow,
-  },
-  container: {
-    flex: 1,
-    overflow: "hidden",
-    borderWidth: 1,
-    borderColor: GLASS_BORDER,
-  },
-  miniWrap: { ...StyleSheet.absoluteFillObject },
-  miniTouchable: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 10,
-  },
-  miniArt: { width: 44, height: 44, borderRadius: 10 },
-  miniText: { flex: 1, marginLeft: 10 },
-  miniTitle: { color: colors.onGlassText, fontSize: 13.5, fontWeight: "700" },
-  miniArtist: { color: colors.onGlassFaint, fontSize: 11, marginTop: 1 },
-  miniBtn: { paddingHorizontal: 8, paddingVertical: 6 },
+const makeStyles = (theme) =>
+  StyleSheet.create({
+    container: {
+      position: "absolute",
+      left: 0,
+      right: 0,
+      overflow: "hidden",
+      backgroundColor: theme.background,
+      zIndex: 50,
+    },
+    miniWrap: { ...StyleSheet.absoluteFillObject, borderTopWidth: 1, borderTopColor: theme.border },
+    miniTouchable: { flex: 1, flexDirection: "row", alignItems: "center", paddingHorizontal: 14 },
+    miniArt: { width: 44, height: 44, borderRadius: 10 },
+    miniText: { flex: 1, marginLeft: 12 },
+    miniTitle: { color: theme.text, fontSize: 14, fontWeight: "700" },
+    miniArtist: { color: theme.textFaint, fontSize: 11.5, marginTop: 1 },
+    miniPlayBtn: {
+      width: 34,
+      height: 34,
+      borderRadius: 17,
+      backgroundColor: theme.accent,
+      alignItems: "center",
+      justifyContent: "center",
+      marginRight: 6,
+    },
+    miniBtn: { paddingHorizontal: 6, paddingVertical: 6 },
+    miniProgressTrack: { height: 2, backgroundColor: theme.surfaceAlt },
+    miniProgressFill: { height: 2, backgroundColor: theme.accent },
 
-  expandedWrap: { flex: 1, paddingHorizontal: 24 },
-  dragHandle: {
-    alignSelf: "center",
-    width: 40,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: "rgba(27,14,31,0.25)",
-    marginBottom: 6,
-  },
-  expandedHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginTop: 10,
-  },
-  nowPlayingLabel: {
-    color: colors.onGlassFaint,
-    fontSize: 12,
-    fontWeight: "700",
-    letterSpacing: 2,
-  },
-  bannerWrap: {
-    marginTop: 28,
-    alignItems: "center",
-  },
-  banner: {
-    width: SCREEN_W - 88,
-    height: SCREEN_W - 88,
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: GLASS_BORDER,
-  },
-  infoWrap: { marginTop: 28, alignItems: "center" },
-  songName: { color: colors.onGlassText, fontSize: 21, fontWeight: "700", maxWidth: "90%" },
-  songArtist: { color: colors.onGlassDim, fontSize: 14, marginTop: 6 },
-  progressWrap: { marginTop: 22 },
-  timeRow: { flexDirection: "row", justifyContent: "space-between", marginTop: -4 },
-  timeText: { color: colors.onGlassFaint, fontSize: 11.5 },
-  controlsRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-evenly",
-    marginTop: 20,
-  },
-  playBtn: { borderRadius: 40, overflow: "hidden" },
-  playBtnGradient: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  actionsRow: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    marginTop: 30,
-  },
-  actionBtn: { alignItems: "center" },
-  actionLabel: { color: colors.onGlassFaint, fontSize: 11, marginTop: 6 },
-});
+    expandedWrap: { flex: 1, paddingHorizontal: 24 },
+    collapseBtn: { alignSelf: "flex-start", marginBottom: 10 },
+    bannerWrap: { marginTop: 18, alignItems: "center" },
+    banner: {
+      width: SCREEN_W - 88,
+      height: SCREEN_W - 88,
+      borderRadius: 16,
+      backgroundColor: theme.placeholder,
+    },
+    infoWrap: { marginTop: 26, width: "100%" },
+    songName: { color: theme.text, fontSize: 22, fontWeight: "800" },
+    songArtist: { color: theme.textSecondary, fontSize: 14, marginTop: 5 },
+    progressRow: { flexDirection: "row", alignItems: "center", marginTop: 26 },
+    timeText: { color: theme.textFaint, fontSize: 12 },
+    controlsRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-evenly",
+      marginTop: 18,
+    },
+    playBtn: {
+      width: 68,
+      height: 68,
+      borderRadius: 34,
+      backgroundColor: theme.accent,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    actionsRow: { flexDirection: "row", justifyContent: "space-evenly", marginTop: 32 },
+    actionBtn: { alignItems: "center" },
+    actionIconWrap: {
+      width: 44,
+      height: 44,
+      borderRadius: 12,
+      backgroundColor: theme.surface,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    actionLabel: { color: theme.textFaint, fontSize: 11, marginTop: 6 },
+  });

@@ -1,6 +1,5 @@
 import React from "react";
-import { StatusBar } from "expo-status-bar";
-import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
+import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { View, ActivityIndicator } from "react-native";
@@ -8,47 +7,54 @@ import { View, ActivityIndicator } from "react-native";
 import { LibraryProvider } from "./src/context/LibraryContext";
 import { PlayerProvider } from "./src/context/PlayerContext";
 import { OnboardingProvider, useOnboarding } from "./src/context/OnboardingContext";
+import { ThemeProvider, useAppTheme } from "./src/context/ThemeContext";
 
 import BottomTabs from "./src/navigation/BottomTabs";
 import PlayerSheet from "./src/components/PlayerSheet";
+import SettingsScreen from "./src/screens/SettingsScreen";
 import LanguageSetupScreen from "./src/screens/LanguageSetupScreen";
-import AppBackground from "./src/components/AppBackground";
-import colors from "./src/theme/colors";
-
-const NavTheme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    background: "transparent",
-    card: "transparent",
-    border: "transparent",
-    primary: colors.coral,
-    text: colors.text,
-  },
-};
+import AppScreen from "./src/components/AppScreen";
 
 function RootNavigator() {
+  const { theme, mode } = useAppTheme();
   const { loaded, needsSetup } = useOnboarding();
+
+  const navTheme = {
+    ...(mode === "dark" ? DarkTheme : DefaultTheme),
+    colors: {
+      ...(mode === "dark" ? DarkTheme.colors : DefaultTheme.colors),
+      background: theme.background,
+      card: theme.background,
+      border: theme.border,
+      primary: theme.accent,
+      text: theme.text,
+    },
+  };
 
   if (!loaded) {
     return (
-      <AppBackground>
+      <AppScreen>
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-          <ActivityIndicator color={colors.coral} size="large" />
+          <ActivityIndicator color={theme.accent} size="large" />
         </View>
-      </AppBackground>
+      </AppScreen>
     );
   }
 
-  if (needsSetup) {
-    return <LanguageSetupScreen />;
-  }
-
   return (
-    <View style={{ flex: 1 }}>
-      <BottomTabs />
-      <PlayerSheet />
-    </View>
+    <>
+      <NavigationContainer theme={navTheme}>
+        {needsSetup ? (
+          <LanguageSetupScreen />
+        ) : (
+          <View style={{ flex: 1, backgroundColor: theme.background }}>
+            <BottomTabs />
+            <PlayerSheet />
+          </View>
+        )}
+      </NavigationContainer>
+      <SettingsScreen />
+    </>
   );
 }
 
@@ -56,16 +62,15 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <OnboardingProvider>
-          <LibraryProvider>
-            <PlayerProvider>
-              <NavigationContainer theme={NavTheme}>
-                <StatusBar style="light" />
+        <ThemeProvider>
+          <OnboardingProvider>
+            <LibraryProvider>
+              <PlayerProvider>
                 <RootNavigator />
-              </NavigationContainer>
-            </PlayerProvider>
-          </LibraryProvider>
-        </OnboardingProvider>
+              </PlayerProvider>
+            </LibraryProvider>
+          </OnboardingProvider>
+        </ThemeProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

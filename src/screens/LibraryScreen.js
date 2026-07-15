@@ -1,21 +1,20 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import AppBackground from "../components/AppBackground";
-import GlassView from "../components/GlassView";
-import colors from "../theme/colors";
+import AppScreen from "../components/AppScreen";
+import Header from "../components/Header";
+import { useAppTheme } from "../context/ThemeContext";
 import { useLibrary } from "../context/LibraryContext";
 
 const TILES = [
-  { key: "Favorites", label: "Favorites", icon: "heart", desc: "Songs you love" },
-  { key: "Playlists", label: "Playlist", icon: "albums", desc: "Your custom mixes" },
-  { key: "Downloads", label: "Download", icon: "download", desc: "Saved for offline" },
+  { key: "Favorites", label: "Favourites", icon: "heart" },
+  { key: "Playlists", label: "Playlists", icon: "albums" },
+  { key: "Downloads", label: "Downloads", icon: "download" },
 ];
 
 export default function LibraryScreen({ navigation }) {
-  const insets = useSafeAreaInsets();
+  const { theme } = useAppTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
   const { favorites, playlists, downloads } = useLibrary();
 
   const counts = {
@@ -25,57 +24,50 @@ export default function LibraryScreen({ navigation }) {
   };
 
   return (
-    <AppBackground>
-      <View style={[styles.header, { paddingTop: insets.top + 10 }]}>
-        <Text style={styles.title}>Your Library</Text>
-      </View>
+    <AppScreen>
+      <Header />
+      <Text style={styles.title}>Library</Text>
 
       <View style={styles.list}>
         {TILES.map((tile) => (
           <TouchableOpacity
             key={tile.key}
-            activeOpacity={0.8}
+            activeOpacity={0.7}
+            style={styles.row}
             onPress={() => navigation.navigate(tile.key)}
           >
-            <GlassView style={styles.tile} radius={20}>
-              <View style={styles.tileInner}>
-                <LinearGradient colors={colors.gradient} style={styles.iconWrap}>
-                  <Ionicons name={tile.icon} size={22} color="#fff" />
-                </LinearGradient>
-                <View style={{ flex: 1, marginLeft: 14 }}>
-                  <Text style={styles.tileLabel}>{tile.label}</Text>
-                  <Text style={styles.tileDesc}>{tile.desc}</Text>
-                </View>
-                <Text style={styles.tileCount}>{counts[tile.key]}</Text>
-                <Ionicons
-                  name="chevron-forward"
-                  size={18}
-                  color={colors.onGlassFaint}
-                  style={{ marginLeft: 6 }}
-                />
-              </View>
-            </GlassView>
+            <View style={styles.iconWrap}>
+              <Ionicons name={tile.icon} size={18} color={theme.accent} />
+            </View>
+            <Text style={styles.label}>{tile.label}</Text>
+            <Text style={styles.count}>{counts[tile.key]}</Text>
+            <Ionicons name="chevron-forward" size={16} color={theme.textFaint} style={{ marginLeft: 6 }} />
           </TouchableOpacity>
         ))}
       </View>
-    </AppBackground>
+    </AppScreen>
   );
 }
 
-const styles = StyleSheet.create({
-  header: { paddingHorizontal: 20, marginBottom: 20 },
-  title: { color: colors.text, fontSize: 26, fontWeight: "800" },
-  list: { paddingHorizontal: 20, gap: 14 },
-  tile: { marginBottom: 14 },
-  tileInner: { flexDirection: "row", alignItems: "center", padding: 16 },
-  iconWrap: {
-    width: 48,
-    height: 48,
-    borderRadius: 14,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  tileLabel: { color: colors.onGlassText, fontSize: 16, fontWeight: "700" },
-  tileDesc: { color: colors.onGlassFaint, fontSize: 12, marginTop: 2 },
-  tileCount: { color: colors.onGlassDim, fontSize: 14, fontWeight: "600" },
-});
+const makeStyles = (theme) =>
+  StyleSheet.create({
+    title: { color: theme.text, fontSize: 22, fontWeight: "800", textAlign: "center", marginBottom: 24 },
+    list: { paddingHorizontal: 20 },
+    row: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingVertical: 14,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.divider,
+    },
+    iconWrap: {
+      width: 32,
+      height: 32,
+      borderRadius: 9,
+      backgroundColor: theme.surfaceAlt,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    label: { color: theme.text, fontSize: 15, fontWeight: "600", marginLeft: 14, flex: 1 },
+    count: { color: theme.textFaint, fontSize: 13, fontWeight: "600" },
+  });

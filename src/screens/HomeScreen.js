@@ -1,29 +1,27 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import {
   View,
   Text,
-  Image,
   FlatList,
   StyleSheet,
-  TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import AppBackground from "../components/AppBackground";
-import GlassView from "../components/GlassView";
+import AppScreen from "../components/AppScreen";
+import Header from "../components/Header";
 import SectionHeader from "../components/SectionHeader";
 import SongCard from "../components/SongCard";
 import PlaylistCard from "../components/PlaylistCard";
-import colors from "../theme/colors";
+import { useAppTheme } from "../context/ThemeContext";
 import { useLibrary } from "../context/LibraryContext";
 import { useOnboarding } from "../context/OnboardingContext";
 import { usePlayer } from "../context/PlayerContext";
 import { getTrendingForLanguage, normalizeSong } from "../api/musicApi";
 
 export default function HomeScreen({ navigation }) {
-  const insets = useSafeAreaInsets();
+  const { theme } = useAppTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
   const { recentlyPlayed, playlists } = useLibrary();
   const { languages } = useOnboarding();
   const { playSong } = usePlayer();
@@ -57,28 +55,21 @@ export default function HomeScreen({ navigation }) {
   };
 
   return (
-    <AppBackground>
+    <AppScreen>
       <FlatList
         data={languages}
         keyExtractor={(l) => l}
-        contentContainerStyle={{ paddingBottom: 140 + insets.bottom }}
+        contentContainerStyle={{ paddingBottom: 140 }}
         refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor={colors.coral}
-          />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={theme.accent} />
         }
         ListHeaderComponent={
           <>
-            <View style={[styles.header, { paddingTop: insets.top + 10 }]}>
-              <Image source={require("../../assets/logo.png")} style={styles.logo} resizeMode="contain" />
-              <Text style={styles.greeting}>Good listening today</Text>
-            </View>
+            <Header />
 
             {recentlyPlayed.length > 0 && (
               <>
-                <SectionHeader title="Last session" subtitle="Pick up where you left off" />
+                <SectionHeader title="Last Session" />
                 <FlatList
                   data={recentlyPlayed}
                   horizontal
@@ -93,8 +84,7 @@ export default function HomeScreen({ navigation }) {
             )}
 
             <SectionHeader
-              title="Your playlists"
-              subtitle={`${playlists.length} playlist${playlists.length === 1 ? "" : "s"}`}
+              title="Your Playlists"
               onPressSeeAll={() => navigation.navigate("LibraryTab", { screen: "Playlists" })}
             />
             {playlists.length > 0 ? (
@@ -117,14 +107,12 @@ export default function HomeScreen({ navigation }) {
                 )}
               />
             ) : (
-              <GlassView radius={16} style={styles.emptyPlaylists}>
-                <View style={styles.emptyPlaylistsInner}>
-                  <Ionicons name="albums-outline" size={20} color={colors.onGlassFaint} />
-                  <Text style={styles.emptyTextOnGlass}>
-                    Tap the + icon on any song to start your first playlist.
-                  </Text>
-                </View>
-              </GlassView>
+              <View style={styles.emptyPlaylists}>
+                <Ionicons name="albums-outline" size={20} color={theme.textFaint} />
+                <Text style={styles.emptyText}>
+                  Tap the + icon on any song to start your first playlist.
+                </Text>
+              </View>
             )}
           </>
         }
@@ -133,11 +121,11 @@ export default function HomeScreen({ navigation }) {
           const isLoading = loadingLangs[lang];
           return (
             <View>
-              <SectionHeader title={`Trending in ${lang}`} subtitle="Updated for you" />
+              <SectionHeader title={`Trending Songs`} subtitle={lang} />
               {isLoading && songs.length === 0 ? (
-                <ActivityIndicator color={colors.coral} style={{ marginTop: 20 }} />
+                <ActivityIndicator color={theme.accent} style={{ marginTop: 20 }} />
               ) : songs.length === 0 ? (
-                <Text style={styles.emptyText}>Nothing found right now.</Text>
+                <Text style={styles.emptyInline}>Nothing found right now.</Text>
               ) : (
                 <FlatList
                   data={songs}
@@ -154,27 +142,20 @@ export default function HomeScreen({ navigation }) {
           );
         }}
       />
-    </AppBackground>
+    </AppScreen>
   );
 }
 
-const styles = StyleSheet.create({
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    marginBottom: 6,
-  },
-  logo: { width: 34, height: 34, marginRight: 10 },
-  greeting: { color: colors.text, fontSize: 17, fontWeight: "700" },
-  emptyPlaylists: {
-    marginHorizontal: 20,
-  },
-  emptyPlaylistsInner: {
-    padding: 16,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  emptyText: { color: colors.textFaint, fontSize: 12, marginLeft: 10, flex: 1, paddingHorizontal: 20 },
-  emptyTextOnGlass: { color: colors.onGlassFaint, fontSize: 12, marginLeft: 10, flex: 1 },
-});
+const makeStyles = (theme) =>
+  StyleSheet.create({
+    emptyPlaylists: {
+      marginHorizontal: 20,
+      padding: 16,
+      borderRadius: 14,
+      backgroundColor: theme.surface,
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    emptyText: { color: theme.textFaint, fontSize: 12, marginLeft: 10, flex: 1 },
+    emptyInline: { color: theme.textFaint, fontSize: 12, marginLeft: 20, marginTop: 4 },
+  });

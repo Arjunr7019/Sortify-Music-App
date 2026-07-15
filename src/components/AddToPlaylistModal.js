@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Modal,
   View,
@@ -11,13 +11,12 @@ import {
   Image,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
-import GlassView from "./GlassView";
-import colors from "../theme/colors";
-import { GLASS_BORDER } from "../theme/glass";
+import { useAppTheme } from "../context/ThemeContext";
 import { useLibrary } from "../context/LibraryContext";
 
 export default function AddToPlaylistModal({ visible, song, onClose }) {
+  const { theme } = useAppTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
   const { playlists, createPlaylist, addSongToPlaylist } = useLibrary();
   const [newName, setNewName] = useState("");
   const [justAddedId, setJustAddedId] = useState(null);
@@ -43,14 +42,14 @@ export default function AddToPlaylistModal({ visible, song, onClose }) {
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <Pressable style={styles.backdrop} onPress={onClose}>
         <Pressable onPress={(e) => e.stopPropagation()} style={styles.sheetWrap}>
-          <GlassView radius={22} style={styles.glass}>
+          <View style={styles.sheet}>
             <View style={styles.dragHandle} />
 
             <View style={styles.songRow}>
               {song.image ? (
                 <Image source={{ uri: song.image }} style={styles.songArt} />
               ) : (
-                <View style={[styles.songArt, { backgroundColor: colors.surface }]} />
+                <View style={[styles.songArt, { backgroundColor: theme.placeholder }]} />
               )}
               <View style={{ flex: 1, marginLeft: 12 }}>
                 <Text style={styles.title}>Add to playlist</Text>
@@ -64,7 +63,7 @@ export default function AddToPlaylistModal({ visible, song, onClose }) {
               <TextInput
                 style={styles.input}
                 placeholder="New playlist name"
-                placeholderTextColor={colors.onGlassFaint}
+                placeholderTextColor={theme.textFaint}
                 value={newName}
                 onChangeText={setNewName}
                 returnKeyType="done"
@@ -73,17 +72,13 @@ export default function AddToPlaylistModal({ visible, song, onClose }) {
               <TouchableOpacity
                 onPress={handleCreate}
                 disabled={!newName.trim()}
-                style={{ opacity: newName.trim() ? 1 : 0.4 }}
+                style={[styles.createBtn, { opacity: newName.trim() ? 1 : 0.4 }]}
               >
-                <LinearGradient colors={colors.gradient} style={styles.createBtn}>
-                  <Ionicons name="add" size={22} color="#fff" />
-                </LinearGradient>
+                <Ionicons name="add" size={22} color={theme.accentOn} />
               </TouchableOpacity>
             </View>
 
-            {playlists.length > 0 && (
-              <Text style={styles.sectionLabel}>Your playlists</Text>
-            )}
+            {playlists.length > 0 && <Text style={styles.sectionLabel}>Your playlists</Text>}
 
             <FlatList
               data={playlists}
@@ -93,7 +88,7 @@ export default function AddToPlaylistModal({ visible, song, onClose }) {
               ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
               ListEmptyComponent={
                 <View style={styles.emptyWrap}>
-                  <Ionicons name="albums-outline" size={26} color={colors.onGlassFaint} />
+                  <Ionicons name="albums-outline" size={26} color={theme.textFaint} />
                   <Text style={styles.empty}>
                     No playlists yet — create one above to get started.
                   </Text>
@@ -105,12 +100,12 @@ export default function AddToPlaylistModal({ visible, song, onClose }) {
                 return (
                   <TouchableOpacity
                     style={styles.plRow}
-                    activeOpacity={0.75}
+                    activeOpacity={0.7}
                     onPress={() => !already && handleAdd(item.id)}
                     disabled={already}
                   >
                     <View style={styles.plIconWrap}>
-                      <Ionicons name="musical-notes" size={16} color={colors.coral} />
+                      <Ionicons name="musical-notes" size={16} color={theme.accent} />
                     </View>
                     <View style={{ flex: 1, marginLeft: 12 }}>
                       <Text style={styles.plName} numberOfLines={1}>
@@ -123,7 +118,7 @@ export default function AddToPlaylistModal({ visible, song, onClose }) {
                     <Ionicons
                       name={already || justAdded ? "checkmark-circle" : "add-circle-outline"}
                       size={22}
-                      color={already || justAdded ? colors.success : colors.onGlassFaint}
+                      color={already || justAdded ? theme.success : theme.textFaint}
                     />
                   </TouchableOpacity>
                 );
@@ -133,84 +128,88 @@ export default function AddToPlaylistModal({ visible, song, onClose }) {
             <TouchableOpacity style={styles.cancel} onPress={onClose}>
               <Text style={styles.cancelText}>Close</Text>
             </TouchableOpacity>
-          </GlassView>
+          </View>
         </Pressable>
       </Pressable>
     </Modal>
   );
 }
 
-const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    backgroundColor: "rgba(5,1,7,0.55)",
-    justifyContent: "flex-end",
-  },
-  sheetWrap: { paddingHorizontal: 16, paddingBottom: 30 },
-  glass: { padding: 20 },
-  dragHandle: {
-    alignSelf: "center",
-    width: 36,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: colors.borderStrong,
-    marginBottom: 16,
-  },
-  songRow: { flexDirection: "row", alignItems: "center", marginBottom: 18 },
-  songArt: { width: 50, height: 50, borderRadius: 12, borderWidth: 1, borderColor: GLASS_BORDER },
-  title: { color: colors.onGlassText, fontSize: 17, fontWeight: "700" },
-  subtitle: { color: colors.onGlassFaint, fontSize: 12, marginTop: 3 },
-  createRow: { flexDirection: "row", alignItems: "center" },
-  input: {
-    flex: 1,
-    color: colors.onGlassText,
-    backgroundColor: "rgba(255,255,255,0.10)",
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    borderWidth: 1,
-    borderColor: GLASS_BORDER,
-    fontSize: 14,
-  },
-  createBtn: {
-    marginLeft: 10,
-    width: 44,
-    height: 44,
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  sectionLabel: {
-    color: colors.onGlassFaint,
-    fontSize: 11,
-    fontWeight: "700",
-    letterSpacing: 1,
-    textTransform: "uppercase",
-    marginTop: 22,
-    marginBottom: 10,
-  },
-  emptyWrap: { alignItems: "center", paddingVertical: 22 },
-  empty: { color: colors.onGlassFaint, fontSize: 12.5, textAlign: "center", marginTop: 10, paddingHorizontal: 20 },
-  plRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.06)",
-    borderRadius: 14,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.10)",
-  },
-  plIconWrap: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    backgroundColor: "rgba(255,255,255,0.08)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  plName: { color: colors.onGlassText, fontSize: 14, fontWeight: "600" },
-  plCount: { color: colors.onGlassFaint, fontSize: 11.5, marginTop: 2 },
-  cancel: { marginTop: 18, alignItems: "center", paddingVertical: 8 },
-  cancelText: { color: colors.onGlassDim, fontSize: 14, fontWeight: "600" },
-});
+const makeStyles = (theme) =>
+  StyleSheet.create({
+    backdrop: { flex: 1, backgroundColor: "rgba(0,0,0,0.5)", justifyContent: "flex-end" },
+    sheetWrap: { paddingHorizontal: 16, paddingBottom: 30 },
+    sheet: {
+      backgroundColor: theme.background,
+      borderRadius: 20,
+      padding: 20,
+      borderWidth: 1,
+      borderColor: theme.border,
+    },
+    dragHandle: {
+      alignSelf: "center",
+      width: 36,
+      height: 4,
+      borderRadius: 2,
+      backgroundColor: theme.surfaceAlt,
+      marginBottom: 16,
+    },
+    songRow: { flexDirection: "row", alignItems: "center", marginBottom: 18 },
+    songArt: { width: 50, height: 50, borderRadius: 12 },
+    title: { color: theme.text, fontSize: 17, fontWeight: "700" },
+    subtitle: { color: theme.textFaint, fontSize: 12, marginTop: 3 },
+    createRow: { flexDirection: "row", alignItems: "center" },
+    input: {
+      flex: 1,
+      color: theme.text,
+      backgroundColor: theme.surface,
+      borderRadius: 12,
+      paddingHorizontal: 14,
+      paddingVertical: 12,
+      borderWidth: 1,
+      borderColor: theme.border,
+      fontSize: 14,
+    },
+    createBtn: {
+      marginLeft: 10,
+      width: 44,
+      height: 44,
+      borderRadius: 12,
+      backgroundColor: theme.accent,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    sectionLabel: {
+      color: theme.textFaint,
+      fontSize: 11,
+      fontWeight: "700",
+      letterSpacing: 1,
+      textTransform: "uppercase",
+      marginTop: 22,
+      marginBottom: 10,
+    },
+    emptyWrap: { alignItems: "center", paddingVertical: 22 },
+    empty: { color: theme.textFaint, fontSize: 12.5, textAlign: "center", marginTop: 10, paddingHorizontal: 20 },
+    plRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: theme.surface,
+      borderRadius: 14,
+      paddingVertical: 10,
+      paddingHorizontal: 12,
+      borderWidth: 1,
+      borderColor: theme.border,
+    },
+    plIconWrap: {
+      width: 36,
+      height: 36,
+      borderRadius: 10,
+      backgroundColor: theme.surfaceAlt,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    plName: { color: theme.text, fontSize: 14, fontWeight: "600" },
+    plCount: { color: theme.textFaint, fontSize: 11.5, marginTop: 2 },
+    cancel: { marginTop: 18, alignItems: "center", paddingVertical: 8 },
+    cancelText: { color: theme.textSecondary, fontSize: 14, fontWeight: "600" },
+  });

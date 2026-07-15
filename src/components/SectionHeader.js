@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import colors from "../theme/colors";
+import { useAppTheme } from "../context/ThemeContext";
 
 export default function SectionHeader({ title, subtitle, onPressSeeAll }) {
+  const { theme } = useAppTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
+
   return (
     <View style={styles.row}>
       <View>
@@ -18,29 +21,17 @@ export default function SectionHeader({ title, subtitle, onPressSeeAll }) {
   );
 }
 
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-end",
-    paddingHorizontal: 20,
-    marginBottom: 12,
-    marginTop: 22,
-  },
-  title: {
-    color: colors.text,
-    fontSize: 19,
-    fontWeight: "700",
-    letterSpacing: 0.2,
-  },
-  subtitle: {
-    color: colors.textFaint,
-    fontSize: 12,
-    marginTop: 2,
-  },
-  seeAll: {
-    color: colors.coral,
-    fontSize: 13,
-    fontWeight: "600",
-  },
-});
+const makeStyles = (theme) =>
+  StyleSheet.create({
+    row: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "flex-end",
+      paddingHorizontal: 20,
+      marginBottom: 12,
+      marginTop: 22,
+    },
+    title: { color: theme.text, fontSize: 18, fontWeight: "800", letterSpacing: 0.2 },
+    subtitle: { color: theme.textFaint, fontSize: 12, marginTop: 2 },
+    seeAll: { color: theme.accent, fontSize: 13, fontWeight: "700" },
+  });
