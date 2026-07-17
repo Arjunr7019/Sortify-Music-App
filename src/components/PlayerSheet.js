@@ -506,7 +506,7 @@ const makeStyles = (theme) =>
     container: {
       position: "absolute",
       left: 0,
-      right: 0,
+      width: SCREEN_W,
       overflow: "hidden",
       backgroundColor: theme.background,
       zIndex: 999,
@@ -514,7 +514,10 @@ const makeStyles = (theme) =>
     },
 
     miniWrap: {
-      ...StyleSheet.absoluteFillObject,
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: SCREEN_W,
       height: MINI_HEIGHT,
       backgroundColor: theme.background,
       borderTopWidth: 1,
@@ -571,7 +574,7 @@ const makeStyles = (theme) =>
     miniProgressTrack: {
       position: "absolute",
       left: 0,
-      right: 0,
+      width: SCREEN_W,
       bottom: 0,
       height: 2,
       backgroundColor: theme.surfaceAlt,
