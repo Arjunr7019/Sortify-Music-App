@@ -49,6 +49,8 @@ export function PlayerProvider({ children }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const lockScreenActiveRef = useRef(false);
+
   const loadIndex = useCallback(
     async (idx) => {
       const q = queueRef.current;
@@ -62,17 +64,32 @@ export function PlayerProvider({ children }) {
       if (!url) return;
 
       player.replace(url);
-      player.setActiveForLockScreen(
-        true,
-        {
-          title: song.name,
-          artist: song.artist,
-          albumTitle: song.album || undefined,
-          artworkUrl: song.image || undefined,
-        },
-        { showSeekBackward: true, showSeekForward: true }
-      );
       player.play();
+
+      // Lock-screen/notification metadata is best-effort: a failure here
+      // (e.g. the native service isn't built into this binary yet) should
+      // never stop in-app playback.
+      const metadata = {
+        title: song.name,
+        artist: song.artist,
+        albumTitle: song.album || undefined,
+        artworkUrl: song.image || undefined,
+      };
+      try {
+        if (!lockScreenActiveRef.current) {
+          await player.setActiveForLockScreen(true, metadata, {
+            showSeekBackward: true,
+            showSeekForward: true,
+          });
+          lockScreenActiveRef.current = true;
+        } else {
+          await player.updateLockScreenMetadata(metadata);
+        }
+      } catch (e) {
+        // Most commonly means the app needs a fresh native build after
+        // the expo-audio config plugin was added/changed — see README.
+        lockScreenActiveRef.current = false;
+      }
 
       setCurrent(song);
       addRecentlyPlayed(song);
