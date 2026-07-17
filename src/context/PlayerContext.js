@@ -1,133 +1,139 @@
 import React, { createContext, useContext, useEffect, useRef, useState, useCallback } from "react";
-import { Audio } from "expo-av";
+import { Platform } from "react-native";
+import {
+  createAudioPlayer,
+  useAudioPlayerStatus,
+  setAudioModeAsync,
+  requestNotificationPermissionsAsync,
+} from "expo-audio";
 import { useLibrary } from "./LibraryContext";
+import { useQuality } from "./QualityContext";
+import { resolveAudioUrl } from "../api/musicApi";
 
 const PlayerContext = createContext(null);
 
 export function PlayerProvider({ children }) {
-  const soundRef = useRef(null);
-  const [queue, setQueue] = useState([]);
-  const [queueIndex, setQueueIndex] = useState(0);
+  const [player] = useState(() => createAudioPlayer(null));
   const [current, setCurrent] = useState(null); // normalized song
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isBuffering, setIsBuffering] = useState(false);
-  const [positionMillis, setPositionMillis] = useState(0);
-  const [durationMillis, setDurationMillis] = useState(0);
   const [sheetExpanded, setSheetExpanded] = useState(false);
 
   const { addRecentlyPlayed } = useLibrary();
+  const { quality } = useQuality();
 
+  const status = useAudioPlayerStatus(player);
+
+  // App-level queue — expo-audio's AudioPlayer is a single track, so we
+  // manage the "which song is next/previous" ourselves and call
+  // player.replace() to move between them.
+  const queueRef = useRef([]);
+  const queueIndexRef = useRef(0);
+  const qualityRef = useRef(quality);
   useEffect(() => {
-    Audio.setAudioModeAsync({
-      playsInSilentModeIOS: true,
-      staysActiveInBackground: true,
-      shouldDuckAndroid: true,
+    qualityRef.current = quality;
+  }, [quality]);
+
+  // One-time audio session setup so playback survives backgrounding and
+  // the OS treats it as "now playing" for lock-screen controls.
+  useEffect(() => {
+    setAudioModeAsync({
+      playsInSilentMode: true,
+      shouldPlayInBackground: true,
+      interruptionMode: "doNotMix",
     }).catch(() => {});
+    if (Platform.OS === "android") {
+      requestNotificationPermissionsAsync().catch(() => {});
+    }
     return () => {
-      if (soundRef.current) soundRef.current.unloadAsync();
+      player.remove();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const onStatusUpdate = useCallback(
-    (status) => {
-      if (!status.isLoaded) {
-        setIsBuffering(true);
-        return;
-      }
-      setIsBuffering(status.isBuffering);
-      setIsPlaying(status.isPlaying);
-      setPositionMillis(status.positionMillis || 0);
-      setDurationMillis(status.durationMillis || 0);
-      if (status.didJustFinish) {
-        playNext();
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [queue, queueIndex]
-  );
+  const loadIndex = useCallback(
+    async (idx) => {
+      const q = queueRef.current;
+      if (!q.length) return;
+      const wrapped = ((idx % q.length) + q.length) % q.length;
+      const song = q[wrapped];
+      queueIndexRef.current = wrapped;
 
-  const loadAndPlay = useCallback(
-    async (song) => {
-      if (!song?.audioUrl) return;
+      const isLocalFile = typeof song.audioUrl === "string" && song.audioUrl.startsWith("file://");
+      const url = isLocalFile ? song.audioUrl : resolveAudioUrl(song, qualityRef.current);
+      if (!url) return;
+
+      player.replace(url);
+      player.setActiveForLockScreen(
+        true,
+        {
+          title: song.name,
+          artist: song.artist,
+          albumTitle: song.album || undefined,
+          artworkUrl: song.image || undefined,
+        },
+        { showSeekBackward: true, showSeekForward: true }
+      );
+      player.play();
+
       setCurrent(song);
-      setIsBuffering(true);
-      try {
-        if (soundRef.current) {
-          await soundRef.current.unloadAsync();
-          soundRef.current = null;
-        }
-        const { sound } = await Audio.Sound.createAsync(
-          { uri: song.audioUrl },
-          { shouldPlay: true },
-          onStatusUpdate
-        );
-        soundRef.current = sound;
-        addRecentlyPlayed(song);
-      } catch (e) {
-        setIsBuffering(false);
-      }
+      addRecentlyPlayed(song);
     },
-    [onStatusUpdate, addRecentlyPlayed]
+    [player, addRecentlyPlayed]
   );
 
-  // Start playing a song, optionally with a queue (e.g. a whole trending row)
   const playSong = useCallback(
-    (song, songQueue) => {
+    async (song, songQueue) => {
+      if (!song?.id) return;
       const q = songQueue && songQueue.length ? songQueue : [song];
+      queueRef.current = q;
       const idx = q.findIndex((s) => s.id === song.id);
-      setQueue(q);
-      setQueueIndex(idx === -1 ? 0 : idx);
-      loadAndPlay(song);
+      await loadIndex(idx === -1 ? 0 : idx);
       setSheetExpanded(true);
     },
-    [loadAndPlay]
+    [loadIndex]
   );
 
-  const togglePlayPause = useCallback(async () => {
-    if (!soundRef.current) return;
-    const status = await soundRef.current.getStatusAsync();
-    if (status.isPlaying) {
-      await soundRef.current.pauseAsync();
+  const togglePlayPause = useCallback(() => {
+    if (status.playing) {
+      player.pause();
     } else {
-      await soundRef.current.playAsync();
+      player.play();
     }
-  }, []);
+  }, [player, status.playing]);
 
   const playNext = useCallback(() => {
-    setQueue((q) => {
-      setQueueIndex((idx) => {
-        const nextIdx = idx + 1 < q.length ? idx + 1 : 0;
-        if (q[nextIdx]) loadAndPlay(q[nextIdx]);
-        return nextIdx;
-      });
-      return q;
-    });
-  }, [loadAndPlay]);
+    loadIndex(queueIndexRef.current + 1);
+  }, [loadIndex]);
 
   const playPrevious = useCallback(() => {
-    setQueue((q) => {
-      setQueueIndex((idx) => {
-        const prevIdx = idx - 1 >= 0 ? idx - 1 : q.length - 1;
-        if (q[prevIdx]) loadAndPlay(q[prevIdx]);
-        return prevIdx;
-      });
-      return q;
-    });
-  }, [loadAndPlay]);
+    loadIndex(queueIndexRef.current - 1);
+  }, [loadIndex]);
 
-  const seekTo = useCallback(async (millis) => {
-    if (!soundRef.current) return;
-    await soundRef.current.setPositionAsync(millis);
-  }, []);
+  const seekTo = useCallback(
+    (millis) => {
+      player.seekTo(millis / 1000);
+    },
+    [player]
+  );
+
+  // Auto-advance when the current track finishes.
+  const didJustFinishRef = useRef(false);
+  useEffect(() => {
+    if (status.didJustFinish && !didJustFinishRef.current) {
+      didJustFinishRef.current = true;
+      playNext();
+    } else if (!status.didJustFinish) {
+      didJustFinishRef.current = false;
+    }
+  }, [status.didJustFinish, playNext]);
 
   return (
     <PlayerContext.Provider
       value={{
         current,
-        isPlaying,
-        isBuffering,
-        positionMillis,
-        durationMillis,
+        isPlaying: status.playing,
+        isBuffering: status.isBuffering,
+        positionMillis: (status.currentTime || 0) * 1000,
+        durationMillis: (status.duration || 0) * 1000,
         sheetExpanded,
         setSheetExpanded,
         playSong,

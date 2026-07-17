@@ -103,7 +103,32 @@ export function normalizeSong(song) {
     album: song.album?.name || song.album || "",
     image: bestImage,
     audioUrl: bestAudio,
+    // Full list of { quality, url } options straight from the API, so
+    // playback can pick a specific bitrate at play time (see
+    // resolveAudioUrl below) rather than always using the highest one.
+    downloadUrls,
     duration: song.duration || null,
     language: song.language || "",
   };
+}
+
+// Streaming quality options actually offered by the API's downloadUrl
+// entries (e.g. "96kbps", "160kbps", "320kbps").
+export const QUALITY_OPTIONS = ["96kbps", "160kbps", "320kbps"];
+export const DEFAULT_QUALITY = "160kbps";
+
+// Resolve the best URL for a song at a given quality, falling back to the
+// closest available bitrate (then the song's default) if that exact
+// quality wasn't returned for this track.
+export function resolveAudioUrl(song, quality) {
+  const list = song?.downloadUrls;
+  if (!list || list.length === 0) return song?.audioUrl || null;
+
+  const exact = list.find((d) => d.quality === quality);
+  if (exact?.url) return exact.url;
+
+  const rank = (q) => parseInt(String(q).replace(/[^0-9]/g, ""), 10) || 0;
+  const target = rank(quality);
+  const sorted = [...list].sort((a, b) => Math.abs(rank(a.quality) - target) - Math.abs(rank(b.quality) - target));
+  return sorted[0]?.url || song?.audioUrl || null;
 }

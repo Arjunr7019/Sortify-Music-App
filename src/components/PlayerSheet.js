@@ -23,7 +23,7 @@ import AddToPlaylistModal from "./AddToPlaylistModal";
 
 const { height: SCREEN_H, width: SCREEN_W } = Dimensions.get("window");
 const MINI_HEIGHT = 66;
-const TAB_BAR_HEIGHT = 58;
+const TAB_BAR_HEIGHT = 70;
 
 export default function PlayerSheet() {
   const insets = useSafeAreaInsets();

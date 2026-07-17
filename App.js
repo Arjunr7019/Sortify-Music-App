@@ -8,6 +8,7 @@ import { LibraryProvider } from "./src/context/LibraryContext";
 import { PlayerProvider } from "./src/context/PlayerContext";
 import { OnboardingProvider, useOnboarding } from "./src/context/OnboardingContext";
 import { ThemeProvider, useAppTheme } from "./src/context/ThemeContext";
+import { QualityProvider } from "./src/context/QualityContext";
 
 import BottomTabs from "./src/navigation/BottomTabs";
 import PlayerSheet from "./src/components/PlayerSheet";
@@ -65,9 +66,11 @@ export default function App() {
         <ThemeProvider>
           <OnboardingProvider>
             <LibraryProvider>
-              <PlayerProvider>
-                <RootNavigator />
-              </PlayerProvider>
+              <QualityProvider>
+                <PlayerProvider>
+                  <RootNavigator />
+                </PlayerProvider>
+              </QualityProvider>
             </LibraryProvider>
           </OnboardingProvider>
         </ThemeProvider>
