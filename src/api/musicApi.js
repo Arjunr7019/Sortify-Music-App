@@ -16,27 +16,22 @@ async function getJSON(url) {
 
 // ---- Search -----------------------------------------------------------
 
-// Global search across songs, albums, artists, playlists, top query.
-export function globalSearch(query) {
-  return getJSON(`${BASE_URL}/search?query=${encodeURIComponent(query)}`);
-}
-
 export function searchSongs(query, page = 0, limit = 20) {
   return getJSON(
     `${BASE_URL}/search/songs?query=${encodeURIComponent(query)}&page=${page}&limit=${limit}`
   );
 }
 
-export function searchAlbums(query) {
-  return getJSON(`${BASE_URL}/search/albums?query=${encodeURIComponent(query)}`);
+export function searchAlbums(query, limit = 20) {
+  return getJSON(`${BASE_URL}/search/albums?query=${encodeURIComponent(query)}&limit=${limit}`);
 }
 
-export function searchArtists(query) {
-  return getJSON(`${BASE_URL}/search/artists?query=${encodeURIComponent(query)}`);
+export function searchArtists(query, limit = 20) {
+  return getJSON(`${BASE_URL}/search/artists?query=${encodeURIComponent(query)}&limit=${limit}`);
 }
 
-export function searchPlaylists(query) {
-  return getJSON(`${BASE_URL}/search/playlists?query=${encodeURIComponent(query)}`);
+export function searchPlaylists(query, limit = 20) {
+  return getJSON(`${BASE_URL}/search/playlists?query=${encodeURIComponent(query)}&limit=${limit}`);
 }
 
 // ---- Songs --------------------------------------------------------------
