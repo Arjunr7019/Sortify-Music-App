@@ -50,6 +50,8 @@ export function PlayerProvider({ children }) {
   }, []);
 
   const lockScreenActiveRef = useRef(false);
+  const lockScreenMetadataRef = useRef(null);
+  const durationPushedRef = useRef(false);
 
   const loadIndex = useCallback(
     async (idx) => {
@@ -63,6 +65,7 @@ export function PlayerProvider({ children }) {
       const url = isLocalFile ? song.audioUrl : resolveAudioUrl(song, qualityRef.current);
       if (!url) return;
 
+      durationPushedRef.current = false;
       player.replace(url);
       player.play();
 
@@ -75,6 +78,7 @@ export function PlayerProvider({ children }) {
         albumTitle: song.album || undefined,
         artworkUrl: song.image || undefined,
       };
+      lockScreenMetadataRef.current = metadata;
       try {
         if (!lockScreenActiveRef.current) {
           await player.setActiveForLockScreen(true, metadata, {
@@ -96,6 +100,31 @@ export function PlayerProvider({ children }) {
     },
     [player, addRecentlyPlayed]
   );
+
+  // A freshly-loaded remote stream reports duration as 0/unknown for a
+  // moment while it buffers, so the very first setActiveForLockScreen call
+  // above often captures a duration of 0 — which is why the lock-screen
+  // progress bar can get stuck at zero even though in-app playback (which
+  // reads live status) looks fine. Once the real duration comes through,
+  // push the metadata again so the OS picks it up.
+  useEffect(() => {
+    if (
+      lockScreenActiveRef.current &&
+      !durationPushedRef.current &&
+      status.duration > 0 &&
+      lockScreenMetadataRef.current
+    ) {
+      durationPushedRef.current = true;
+      (async () => {
+        try {
+          await player.updateLockScreenMetadata(lockScreenMetadataRef.current);
+        } catch (e) {
+          // Service not connected (e.g. running in Expo Go instead of a
+          // dev client) — safe to ignore, in-app playback is unaffected.
+        }
+      })();
+    }
+  }, [status.duration, player]);
 
   const playSong = useCallback(
     async (song, songQueue) => {
