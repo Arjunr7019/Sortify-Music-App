@@ -1,0 +1,898 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-14T10:26:15.714Z",
+  "title": "Design System: Sortify",
+  "extensions": {
+    "colorMeta": {
+      "sortify-green": {
+        "role": "primary",
+        "displayName": "Sortify Green",
+        "tonalRamp": [
+          "oklch(15% 0.0327 150.4)",
+          "oklch(26% 0.0840 150.4)",
+          "oklch(38% 0.1400 150.4)",
+          "oklch(49% 0.1400 150.4)",
+          "oklch(61% 0.1400 150.4)",
+          "oklch(72% 0.1400 150.4)",
+          "oklch(84% 0.1018 150.4)",
+          "oklch(95% 0.0318 150.4)"
+        ]
+      },
+      "dark-primary": {
+        "role": "primary",
+        "displayName": "Dark Primary",
+        "tonalRamp": [
+          "oklch(15% 0.0327 150.4)",
+          "oklch(26% 0.0840 150.4)",
+          "oklch(38% 0.1400 150.4)",
+          "oklch(49% 0.1400 150.4)",
+          "oklch(61% 0.1400 150.4)",
+          "oklch(72% 0.1400 150.4)",
+          "oklch(84% 0.1018 150.4)",
+          "oklch(95% 0.0318 150.4)"
+        ]
+      },
+      "dark-on-primary": {
+        "role": "primary",
+        "displayName": "Dark On Primary",
+        "tonalRamp": [
+          "oklch(15% 0.0129 153.4)",
+          "oklch(26% 0.0333 153.4)",
+          "oklch(38% 0.0555 153.4)",
+          "oklch(49% 0.0555 153.4)",
+          "oklch(61% 0.0555 153.4)",
+          "oklch(72% 0.0555 153.4)",
+          "oklch(84% 0.0403 153.4)",
+          "oklch(95% 0.0126 153.4)"
+        ]
+      },
+      "dark-primary-container": {
+        "role": "primary",
+        "displayName": "Dark Primary Container",
+        "tonalRamp": [
+          "oklch(15% 0.0168 158.3)",
+          "oklch(26% 0.0431 158.3)",
+          "oklch(38% 0.0718 158.3)",
+          "oklch(49% 0.0718 158.3)",
+          "oklch(61% 0.0718 158.3)",
+          "oklch(72% 0.0718 158.3)",
+          "oklch(84% 0.0523 158.3)",
+          "oklch(95% 0.0163 158.3)"
+        ]
+      },
+      "dark-on-primary-container": {
+        "role": "primary",
+        "displayName": "Dark On Primary Container",
+        "tonalRamp": [
+          "oklch(15% 0.0154 153.6)",
+          "oklch(26% 0.0397 153.6)",
+          "oklch(38% 0.0661 153.6)",
+          "oklch(49% 0.0661 153.6)",
+          "oklch(61% 0.0661 153.6)",
+          "oklch(72% 0.0661 153.6)",
+          "oklch(84% 0.0481 153.6)",
+          "oklch(95% 0.0150 153.6)"
+        ]
+      },
+      "dark-background": {
+        "role": "neutral",
+        "displayName": "Dark Background",
+        "tonalRamp": [
+          "oklch(15% 0.0087 165.5)",
+          "oklch(26% 0.0222 165.5)",
+          "oklch(38% 0.0371 165.5)",
+          "oklch(49% 0.0371 165.5)",
+          "oklch(61% 0.0371 165.5)",
+          "oklch(72% 0.0371 165.5)",
+          "oklch(84% 0.0270 165.5)",
+          "oklch(95% 0.0084 165.5)"
+        ]
+      },
+      "dark-on-background": {
+        "role": "neutral",
+        "displayName": "Dark On Background",
+        "tonalRamp": [
+          "oklch(15% 0.0017 151.9)",
+          "oklch(26% 0.0045 151.9)",
+          "oklch(38% 0.0074 151.9)",
+          "oklch(49% 0.0074 151.9)",
+          "oklch(61% 0.0074 151.9)",
+          "oklch(72% 0.0074 151.9)",
+          "oklch(84% 0.0054 151.9)",
+          "oklch(95% 0.0017 151.9)"
+        ]
+      },
+      "dark-surface": {
+        "role": "neutral",
+        "displayName": "Dark Surface",
+        "tonalRamp": [
+          "oklch(15% 0.0078 164.4)",
+          "oklch(26% 0.0201 164.4)",
+          "oklch(38% 0.0335 164.4)",
+          "oklch(49% 0.0335 164.4)",
+          "oklch(61% 0.0335 164.4)",
+          "oklch(72% 0.0335 164.4)",
+          "oklch(84% 0.0244 164.4)",
+          "oklch(95% 0.0076 164.4)"
+        ]
+      },
+      "dark-on-surface": {
+        "role": "neutral",
+        "displayName": "Dark On Surface",
+        "tonalRamp": [
+          "oklch(15% 0.0017 151.9)",
+          "oklch(26% 0.0045 151.9)",
+          "oklch(38% 0.0074 151.9)",
+          "oklch(49% 0.0074 151.9)",
+          "oklch(61% 0.0074 151.9)",
+          "oklch(72% 0.0074 151.9)",
+          "oklch(84% 0.0054 151.9)",
+          "oklch(95% 0.0017 151.9)"
+        ]
+      },
+      "dark-surface-variant": {
+        "role": "neutral",
+        "displayName": "Dark Surface Variant",
+        "tonalRamp": [
+          "oklch(15% 0.0078 160.7)",
+          "oklch(26% 0.0202 160.7)",
+          "oklch(38% 0.0336 160.7)",
+          "oklch(49% 0.0336 160.7)",
+          "oklch(61% 0.0336 160.7)",
+          "oklch(72% 0.0336 160.7)",
+          "oklch(84% 0.0244 160.7)",
+          "oklch(95% 0.0076 160.7)"
+        ]
+      },
+      "dark-on-surface-variant": {
+        "role": "neutral",
+        "displayName": "Dark On Surface Variant",
+        "tonalRamp": [
+          "oklch(15% 0.0052 158.5)",
+          "oklch(26% 0.0134 158.5)",
+          "oklch(38% 0.0223 158.5)",
+          "oklch(49% 0.0223 158.5)",
+          "oklch(61% 0.0223 158.5)",
+          "oklch(72% 0.0223 158.5)",
+          "oklch(84% 0.0162 158.5)",
+          "oklch(95% 0.0051 158.5)"
+        ]
+      },
+      "dark-secondary-container": {
+        "role": "secondary",
+        "displayName": "Dark Secondary Container",
+        "tonalRamp": [
+          "oklch(15% 0.0073 158.8)",
+          "oklch(26% 0.0187 158.8)",
+          "oklch(38% 0.0311 158.8)",
+          "oklch(49% 0.0311 158.8)",
+          "oklch(61% 0.0311 158.8)",
+          "oklch(72% 0.0311 158.8)",
+          "oklch(84% 0.0226 158.8)",
+          "oklch(95% 0.0071 158.8)"
+        ]
+      },
+      "dark-on-secondary-container": {
+        "role": "secondary",
+        "displayName": "Dark On Secondary Container",
+        "tonalRamp": [
+          "oklch(15% 0.0054 157.6)",
+          "oklch(26% 0.0139 157.6)",
+          "oklch(38% 0.0231 157.6)",
+          "oklch(49% 0.0231 157.6)",
+          "oklch(61% 0.0231 157.6)",
+          "oklch(72% 0.0231 157.6)",
+          "oklch(84% 0.0168 157.6)",
+          "oklch(95% 0.0053 157.6)"
+        ]
+      },
+      "dark-outline": {
+        "role": "neutral",
+        "displayName": "Dark Outline",
+        "tonalRamp": [
+          "oklch(15% 0.0081 159.6)",
+          "oklch(26% 0.0208 159.6)",
+          "oklch(38% 0.0346 159.6)",
+          "oklch(49% 0.0346 159.6)",
+          "oklch(61% 0.0346 159.6)",
+          "oklch(72% 0.0346 159.6)",
+          "oklch(84% 0.0252 159.6)",
+          "oklch(95% 0.0079 159.6)"
+        ]
+      },
+      "dark-outline-variant": {
+        "role": "neutral",
+        "displayName": "Dark Outline Variant",
+        "tonalRamp": [
+          "oklch(15% 0.0091 159.5)",
+          "oklch(26% 0.0233 159.5)",
+          "oklch(38% 0.0388 159.5)",
+          "oklch(49% 0.0388 159.5)",
+          "oklch(61% 0.0388 159.5)",
+          "oklch(72% 0.0388 159.5)",
+          "oklch(84% 0.0282 159.5)",
+          "oklch(95% 0.0088 159.5)"
+        ]
+      },
+      "dark-error": {
+        "role": "error",
+        "displayName": "Dark Error",
+        "tonalRamp": [
+          "oklch(15% 0.0208 26.8)",
+          "oklch(26% 0.0535 26.8)",
+          "oklch(38% 0.0891 26.8)",
+          "oklch(49% 0.0891 26.8)",
+          "oklch(61% 0.0891 26.8)",
+          "oklch(72% 0.0891 26.8)",
+          "oklch(84% 0.0648 26.8)",
+          "oklch(95% 0.0202 26.8)"
+        ]
+      },
+      "dark-on-error": {
+        "role": "error",
+        "displayName": "Dark On Error",
+        "tonalRamp": [
+          "oklch(15% 0.0312 27.3)",
+          "oklch(26% 0.0802 27.3)",
+          "oklch(38% 0.1336 27.3)",
+          "oklch(49% 0.1336 27.3)",
+          "oklch(61% 0.1336 27.3)",
+          "oklch(72% 0.1336 27.3)",
+          "oklch(84% 0.0972 27.3)",
+          "oklch(95% 0.0304 27.3)"
+        ]
+      },
+      "dark-inverse-surface": {
+        "role": "neutral",
+        "displayName": "Dark Inverse Surface",
+        "tonalRamp": [
+          "oklch(15% 0.0054 153.4)",
+          "oklch(26% 0.0140 153.4)",
+          "oklch(38% 0.0233 153.4)",
+          "oklch(49% 0.0233 153.4)",
+          "oklch(61% 0.0233 153.4)",
+          "oklch(72% 0.0233 153.4)",
+          "oklch(84% 0.0170 153.4)",
+          "oklch(95% 0.0053 153.4)"
+        ]
+      },
+      "dark-inverse-on-surface": {
+        "role": "neutral",
+        "displayName": "Dark Inverse On Surface",
+        "tonalRamp": [
+          "oklch(15% 0.0109 154.8)",
+          "oklch(26% 0.0281 154.8)",
+          "oklch(38% 0.0469 154.8)",
+          "oklch(49% 0.0469 154.8)",
+          "oklch(61% 0.0469 154.8)",
+          "oklch(72% 0.0469 154.8)",
+          "oklch(84% 0.0341 154.8)",
+          "oklch(95% 0.0107 154.8)"
+        ]
+      },
+      "dark-inverse-primary": {
+        "role": "primary",
+        "displayName": "Dark Inverse Primary",
+        "tonalRamp": [
+          "oklch(15% 0.0327 149.9)",
+          "oklch(26% 0.0840 149.9)",
+          "oklch(38% 0.1400 149.9)",
+          "oklch(49% 0.1400 149.9)",
+          "oklch(61% 0.1400 149.9)",
+          "oklch(72% 0.1400 149.9)",
+          "oklch(84% 0.1018 149.9)",
+          "oklch(95% 0.0318 149.9)"
+        ]
+      },
+      "dark-secondary": {
+        "role": "secondary",
+        "displayName": "Dark Secondary",
+        "tonalRamp": [
+          "oklch(15% 0.0173 157.2)",
+          "oklch(26% 0.0444 157.2)",
+          "oklch(38% 0.0741 157.2)",
+          "oklch(49% 0.0741 157.2)",
+          "oklch(61% 0.0741 157.2)",
+          "oklch(72% 0.0741 157.2)",
+          "oklch(84% 0.0539 157.2)",
+          "oklch(95% 0.0168 157.2)"
+        ]
+      },
+      "dark-on-secondary": {
+        "role": "secondary",
+        "displayName": "Dark On Secondary",
+        "tonalRamp": [
+          "oklch(15% 0.0163 155.4)",
+          "oklch(26% 0.0419 155.4)",
+          "oklch(38% 0.0699 155.4)",
+          "oklch(49% 0.0699 155.4)",
+          "oklch(61% 0.0699 155.4)",
+          "oklch(72% 0.0699 155.4)",
+          "oklch(84% 0.0508 155.4)",
+          "oklch(95% 0.0159 155.4)"
+        ]
+      },
+      "dark-surface-tint": {
+        "role": "neutral",
+        "displayName": "Dark Surface Tint",
+        "tonalRamp": [
+          "oklch(15% 0.0327 150.4)",
+          "oklch(26% 0.0840 150.4)",
+          "oklch(38% 0.1400 150.4)",
+          "oklch(49% 0.1400 150.4)",
+          "oklch(61% 0.1400 150.4)",
+          "oklch(72% 0.1400 150.4)",
+          "oklch(84% 0.1018 150.4)",
+          "oklch(95% 0.0318 150.4)"
+        ]
+      },
+      "dark-surface-container-lowest": {
+        "role": "neutral",
+        "displayName": "Dark Surface Container Lowest",
+        "tonalRamp": [
+          "oklch(15% 0.0081 161.8)",
+          "oklch(26% 0.0207 161.8)",
+          "oklch(38% 0.0345 161.8)",
+          "oklch(49% 0.0345 161.8)",
+          "oklch(61% 0.0345 161.8)",
+          "oklch(72% 0.0345 161.8)",
+          "oklch(84% 0.0251 161.8)",
+          "oklch(95% 0.0079 161.8)"
+        ]
+      },
+      "dark-surface-container-low": {
+        "role": "neutral",
+        "displayName": "Dark Surface Container Low",
+        "tonalRamp": [
+          "oklch(15% 0.0085 161.0)",
+          "oklch(26% 0.0218 161.0)",
+          "oklch(38% 0.0364 161.0)",
+          "oklch(49% 0.0364 161.0)",
+          "oklch(61% 0.0364 161.0)",
+          "oklch(72% 0.0364 161.0)",
+          "oklch(84% 0.0265 161.0)",
+          "oklch(95% 0.0083 161.0)"
+        ]
+      },
+      "dark-surface-container": {
+        "role": "neutral",
+        "displayName": "Dark Surface Container",
+        "tonalRamp": [
+          "oklch(15% 0.0091 161.0)",
+          "oklch(26% 0.0234 161.0)",
+          "oklch(38% 0.0389 161.0)",
+          "oklch(49% 0.0389 161.0)",
+          "oklch(61% 0.0389 161.0)",
+          "oklch(72% 0.0389 161.0)",
+          "oklch(84% 0.0283 161.0)",
+          "oklch(95% 0.0088 161.0)"
+        ]
+      },
+      "dark-surface-container-high": {
+        "role": "neutral",
+        "displayName": "Dark Surface Container High",
+        "tonalRamp": [
+          "oklch(15% 0.0092 160.1)",
+          "oklch(26% 0.0237 160.1)",
+          "oklch(38% 0.0394 160.1)",
+          "oklch(49% 0.0394 160.1)",
+          "oklch(61% 0.0394 160.1)",
+          "oklch(72% 0.0394 160.1)",
+          "oklch(84% 0.0287 160.1)",
+          "oklch(95% 0.0090 160.1)"
+        ]
+      },
+      "dark-surface-container-highest": {
+        "role": "neutral",
+        "displayName": "Dark Surface Container Highest",
+        "tonalRamp": [
+          "oklch(15% 0.0097 160.4)",
+          "oklch(26% 0.0250 160.4)",
+          "oklch(38% 0.0416 160.4)",
+          "oklch(49% 0.0416 160.4)",
+          "oklch(61% 0.0416 160.4)",
+          "oklch(72% 0.0416 160.4)",
+          "oklch(84% 0.0302 160.4)",
+          "oklch(95% 0.0095 160.4)"
+        ]
+      },
+      "light-primary": {
+        "role": "primary",
+        "displayName": "Light Primary",
+        "tonalRamp": [
+          "oklch(15% 0.0327 149.9)",
+          "oklch(26% 0.0840 149.9)",
+          "oklch(38% 0.1400 149.9)",
+          "oklch(49% 0.1400 149.9)",
+          "oklch(61% 0.1400 149.9)",
+          "oklch(72% 0.1400 149.9)",
+          "oklch(84% 0.1018 149.9)",
+          "oklch(95% 0.0318 149.9)"
+        ]
+      },
+      "light-on-primary": {
+        "role": "primary",
+        "displayName": "Light On Primary",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.9)",
+          "oklch(26% 0.0000 89.9)",
+          "oklch(38% 0.0000 89.9)",
+          "oklch(49% 0.0000 89.9)",
+          "oklch(61% 0.0000 89.9)",
+          "oklch(72% 0.0000 89.9)",
+          "oklch(84% 0.0000 89.9)",
+          "oklch(95% 0.0000 89.9)"
+        ]
+      },
+      "light-primary-container": {
+        "role": "primary",
+        "displayName": "Light Primary Container",
+        "tonalRamp": [
+          "oklch(15% 0.0222 153.8)",
+          "oklch(26% 0.0571 153.8)",
+          "oklch(38% 0.0951 153.8)",
+          "oklch(49% 0.0951 153.8)",
+          "oklch(61% 0.0951 153.8)",
+          "oklch(72% 0.0951 153.8)",
+          "oklch(84% 0.0692 153.8)",
+          "oklch(95% 0.0216 153.8)"
+        ]
+      },
+      "light-on-primary-container": {
+        "role": "primary",
+        "displayName": "Light On Primary Container",
+        "tonalRamp": [
+          "oklch(15% 0.0129 153.4)",
+          "oklch(26% 0.0333 153.4)",
+          "oklch(38% 0.0555 153.4)",
+          "oklch(49% 0.0555 153.4)",
+          "oklch(61% 0.0555 153.4)",
+          "oklch(72% 0.0555 153.4)",
+          "oklch(84% 0.0403 153.4)",
+          "oklch(95% 0.0126 153.4)"
+        ]
+      },
+      "light-background": {
+        "role": "neutral",
+        "displayName": "Light Background",
+        "tonalRamp": [
+          "oklch(15% 0.0025 149.9)",
+          "oklch(26% 0.0065 149.9)",
+          "oklch(38% 0.0108 149.9)",
+          "oklch(49% 0.0108 149.9)",
+          "oklch(61% 0.0108 149.9)",
+          "oklch(72% 0.0108 149.9)",
+          "oklch(84% 0.0079 149.9)",
+          "oklch(95% 0.0025 149.9)"
+        ]
+      },
+      "light-on-background": {
+        "role": "neutral",
+        "displayName": "Light On Background",
+        "tonalRamp": [
+          "oklch(15% 0.0075 155.9)",
+          "oklch(26% 0.0194 155.9)",
+          "oklch(38% 0.0323 155.9)",
+          "oklch(49% 0.0323 155.9)",
+          "oklch(61% 0.0323 155.9)",
+          "oklch(72% 0.0323 155.9)",
+          "oklch(84% 0.0235 155.9)",
+          "oklch(95% 0.0073 155.9)"
+        ]
+      },
+      "light-surface": {
+        "role": "neutral",
+        "displayName": "Light Surface",
+        "tonalRamp": [
+          "oklch(15% 0.0029 149.3)",
+          "oklch(26% 0.0075 149.3)",
+          "oklch(38% 0.0124 149.3)",
+          "oklch(49% 0.0124 149.3)",
+          "oklch(61% 0.0124 149.3)",
+          "oklch(72% 0.0124 149.3)",
+          "oklch(84% 0.0090 149.3)",
+          "oklch(95% 0.0028 149.3)"
+        ]
+      },
+      "light-on-surface": {
+        "role": "neutral",
+        "displayName": "Light On Surface",
+        "tonalRamp": [
+          "oklch(15% 0.0075 155.9)",
+          "oklch(26% 0.0194 155.9)",
+          "oklch(38% 0.0323 155.9)",
+          "oklch(49% 0.0323 155.9)",
+          "oklch(61% 0.0323 155.9)",
+          "oklch(72% 0.0323 155.9)",
+          "oklch(84% 0.0235 155.9)",
+          "oklch(95% 0.0073 155.9)"
+        ]
+      },
+      "light-surface-variant": {
+        "role": "neutral",
+        "displayName": "Light Surface Variant",
+        "tonalRamp": [
+          "oklch(15% 0.0051 149.7)",
+          "oklch(26% 0.0131 149.7)",
+          "oklch(38% 0.0218 149.7)",
+          "oklch(49% 0.0218 149.7)",
+          "oklch(61% 0.0218 149.7)",
+          "oklch(72% 0.0218 149.7)",
+          "oklch(84% 0.0159 149.7)",
+          "oklch(95% 0.0050 149.7)"
+        ]
+      },
+      "light-on-surface-variant": {
+        "role": "neutral",
+        "displayName": "Light On Surface Variant",
+        "tonalRamp": [
+          "oklch(15% 0.0100 154.1)",
+          "oklch(26% 0.0258 154.1)",
+          "oklch(38% 0.0430 154.1)",
+          "oklch(49% 0.0430 154.1)",
+          "oklch(61% 0.0430 154.1)",
+          "oklch(72% 0.0430 154.1)",
+          "oklch(84% 0.0313 154.1)",
+          "oklch(95% 0.0098 154.1)"
+        ]
+      },
+      "light-secondary-container": {
+        "role": "secondary",
+        "displayName": "Light Secondary Container",
+        "tonalRamp": [
+          "oklch(15% 0.0066 151.9)",
+          "oklch(26% 0.0171 151.9)",
+          "oklch(38% 0.0285 151.9)",
+          "oklch(49% 0.0285 151.9)",
+          "oklch(61% 0.0285 151.9)",
+          "oklch(72% 0.0285 151.9)",
+          "oklch(84% 0.0207 151.9)",
+          "oklch(95% 0.0065 151.9)"
+        ]
+      },
+      "light-on-secondary-container": {
+        "role": "secondary",
+        "displayName": "Light On Secondary Container",
+        "tonalRamp": [
+          "oklch(15% 0.0109 154.8)",
+          "oklch(26% 0.0281 154.8)",
+          "oklch(38% 0.0469 154.8)",
+          "oklch(49% 0.0469 154.8)",
+          "oklch(61% 0.0469 154.8)",
+          "oklch(72% 0.0469 154.8)",
+          "oklch(84% 0.0341 154.8)",
+          "oklch(95% 0.0107 154.8)"
+        ]
+      },
+      "light-outline": {
+        "role": "neutral",
+        "displayName": "Light Outline",
+        "tonalRamp": [
+          "oklch(15% 0.0086 151.9)",
+          "oklch(26% 0.0220 151.9)",
+          "oklch(38% 0.0367 151.9)",
+          "oklch(49% 0.0367 151.9)",
+          "oklch(61% 0.0367 151.9)",
+          "oklch(72% 0.0367 151.9)",
+          "oklch(84% 0.0267 151.9)",
+          "oklch(95% 0.0083 151.9)"
+        ]
+      },
+      "light-outline-variant": {
+        "role": "neutral",
+        "displayName": "Light Outline Variant",
+        "tonalRamp": [
+          "oklch(15% 0.0072 154.6)",
+          "oklch(26% 0.0185 154.6)",
+          "oklch(38% 0.0308 154.6)",
+          "oklch(49% 0.0308 154.6)",
+          "oklch(61% 0.0308 154.6)",
+          "oklch(72% 0.0308 154.6)",
+          "oklch(84% 0.0224 154.6)",
+          "oklch(95% 0.0070 154.6)"
+        ]
+      },
+      "light-secondary": {
+        "role": "secondary",
+        "displayName": "Light Secondary",
+        "tonalRamp": [
+          "oklch(15% 0.0152 155.4)",
+          "oklch(26% 0.0392 155.4)",
+          "oklch(38% 0.0653 155.4)",
+          "oklch(49% 0.0653 155.4)",
+          "oklch(61% 0.0653 155.4)",
+          "oklch(72% 0.0653 155.4)",
+          "oklch(84% 0.0475 155.4)",
+          "oklch(95% 0.0148 155.4)"
+        ]
+      },
+      "light-on-secondary": {
+        "role": "secondary",
+        "displayName": "Light On Secondary",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.9)",
+          "oklch(26% 0.0000 89.9)",
+          "oklch(38% 0.0000 89.9)",
+          "oklch(49% 0.0000 89.9)",
+          "oklch(61% 0.0000 89.9)",
+          "oklch(72% 0.0000 89.9)",
+          "oklch(84% 0.0000 89.9)",
+          "oklch(95% 0.0000 89.9)"
+        ]
+      },
+      "light-surface-tint": {
+        "role": "neutral",
+        "displayName": "Light Surface Tint",
+        "tonalRamp": [
+          "oklch(15% 0.0327 149.9)",
+          "oklch(26% 0.0840 149.9)",
+          "oklch(38% 0.1400 149.9)",
+          "oklch(49% 0.1400 149.9)",
+          "oklch(61% 0.1400 149.9)",
+          "oklch(72% 0.1400 149.9)",
+          "oklch(84% 0.1018 149.9)",
+          "oklch(95% 0.0318 149.9)"
+        ]
+      },
+      "light-surface-container-lowest": {
+        "role": "neutral",
+        "displayName": "Light Surface Container Lowest",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.9)",
+          "oklch(26% 0.0000 89.9)",
+          "oklch(38% 0.0000 89.9)",
+          "oklch(49% 0.0000 89.9)",
+          "oklch(61% 0.0000 89.9)",
+          "oklch(72% 0.0000 89.9)",
+          "oklch(84% 0.0000 89.9)",
+          "oklch(95% 0.0000 89.9)"
+        ]
+      },
+      "light-surface-container-low": {
+        "role": "neutral",
+        "displayName": "Light Surface Container Low",
+        "tonalRamp": [
+          "oklch(15% 0.0032 145.5)",
+          "oklch(26% 0.0081 145.5)",
+          "oklch(38% 0.0135 145.5)",
+          "oklch(49% 0.0135 145.5)",
+          "oklch(61% 0.0135 145.5)",
+          "oklch(72% 0.0135 145.5)",
+          "oklch(84% 0.0098 145.5)",
+          "oklch(95% 0.0031 145.5)"
+        ]
+      },
+      "light-surface-container": {
+        "role": "neutral",
+        "displayName": "Light Surface Container",
+        "tonalRamp": [
+          "oklch(15% 0.0033 148.8)",
+          "oklch(26% 0.0085 148.8)",
+          "oklch(38% 0.0142 148.8)",
+          "oklch(49% 0.0142 148.8)",
+          "oklch(61% 0.0142 148.8)",
+          "oklch(72% 0.0142 148.8)",
+          "oklch(84% 0.0104 148.8)",
+          "oklch(95% 0.0032 148.8)"
+        ]
+      },
+      "light-surface-container-high": {
+        "role": "neutral",
+        "displayName": "Light Surface Container High",
+        "tonalRamp": [
+          "oklch(15% 0.0037 148.4)",
+          "oklch(26% 0.0096 148.4)",
+          "oklch(38% 0.0160 148.4)",
+          "oklch(49% 0.0160 148.4)",
+          "oklch(61% 0.0160 148.4)",
+          "oklch(72% 0.0160 148.4)",
+          "oklch(84% 0.0116 148.4)",
+          "oklch(95% 0.0036 148.4)"
+        ]
+      },
+      "light-surface-container-highest": {
+        "role": "neutral",
+        "displayName": "Light Surface Container Highest",
+        "tonalRamp": [
+          "oklch(15% 0.0048 145.4)",
+          "oklch(26% 0.0123 145.4)",
+          "oklch(38% 0.0205 145.4)",
+          "oklch(49% 0.0205 145.4)",
+          "oklch(61% 0.0205 145.4)",
+          "oklch(72% 0.0205 145.4)",
+          "oklch(84% 0.0149 145.4)",
+          "oklch(95% 0.0047 145.4)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display-large": {
+        "displayName": "Display Large",
+        "purpose": "Welcome and large display roles."
+      },
+      "display-small": {
+        "displayName": "Display Small",
+        "purpose": "Welcome and large display roles."
+      },
+      "headline-large": {
+        "displayName": "Headline Large",
+        "purpose": "Screen introductions and prominent headings."
+      },
+      "headline-medium": {
+        "displayName": "Headline Medium",
+        "purpose": "Screen introductions and prominent headings."
+      },
+      "headline-small": {
+        "displayName": "Headline Small",
+        "purpose": "Screen introductions and prominent headings."
+      },
+      "title-large": {
+        "displayName": "Title Large",
+        "purpose": "Section, track, playlist, and player labels."
+      },
+      "title-medium": {
+        "displayName": "Title Medium",
+        "purpose": "Section, track, playlist, and player labels."
+      },
+      "title-small": {
+        "displayName": "Title Small",
+        "purpose": "Section, track, playlist, and player labels."
+      },
+      "body-large": {
+        "displayName": "Body Large",
+        "purpose": "Descriptions, metadata, and supporting copy."
+      },
+      "body-medium": {
+        "displayName": "Body Medium",
+        "purpose": "Descriptions, metadata, and supporting copy."
+      },
+      "body-small": {
+        "displayName": "Body Small",
+        "purpose": "Descriptions, metadata, and supporting copy."
+      },
+      "label-large": {
+        "displayName": "Label Large",
+        "purpose": "Actions and compact navigation labels."
+      },
+      "label-medium": {
+        "displayName": "Label Medium",
+        "purpose": "Actions and compact navigation labels."
+      }
+    },
+    "shadows": [],
+    "motion": [],
+    "breakpoints": [
+      {
+        "name": "expanded-native",
+        "value": "700dp"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Native filled form action, represented at a 54dp minimum height. Browser feedback is a panel affordance.",
+      "html": "<button class=\"ds-btn-primary\">Create playlist</button>",
+      "css": ".ds-btn-primary{font-family:Roboto,Arial,sans-serif;min-height:54px;border:0;border-radius:999px;padding:0 24px;background:#1ED76A;color:#00210D;font-size:14px;font-weight:700}.ds-btn-primary:disabled{opacity:.38}.ds-btn-primary:focus-visible{outline:2px solid #1ED76A;outline-offset:3px}.ds-btn-primary:hover{filter:brightness(1.08)}.ds-btn-primary:active{filter:brightness(.92)}"
+    },
+    {
+      "name": "Text button",
+      "kind": "button",
+      "refersTo": "button-text",
+      "description": "See all, Retry, and native secondary dialog actions.",
+      "html": "<button class=\"ds-btn-text\">See all →</button>",
+      "css": ".ds-btn-text{font-family:Roboto,Arial,sans-serif;min-height:48px;padding:0 10px;border:0;border-radius:999px;background:transparent;color:#1ED76A;font-size:14px;font-weight:700}.ds-btn-text:focus-visible{outline:2px solid #1ED76A;outline-offset:3px}.ds-btn-text:hover{filter:brightness(1.08)}.ds-btn-text:active{filter:brightness(.92)}"
+    },
+    {
+      "name": "Play button",
+      "kind": "button",
+      "refersTo": "button-play",
+      "description": "Fixed green circular playback action; full player uses the larger 74dp variant.",
+      "html": "<button class=\"ds-btn-play\" aria-label=\"Play\"><svg viewBox=\"0 0 24 24\" width=\"32\" height=\"32\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M8 5v14l11-7z\"/></svg></button>",
+      "css": ".ds-btn-play{font-family:Roboto,Arial,sans-serif;display:inline-flex;align-items:center;justify-content:center;width:60px;height:60px;border:0;border-radius:50%;background:#1ED76A;color:#00210D}.ds-btn-play:focus-visible{outline:2px solid #1ED76A;outline-offset:3px}.ds-btn-play:hover{filter:brightness(1.08)}.ds-btn-play:active{filter:brightness(.92)}"
+    },
+    {
+      "name": "Outlined search field",
+      "kind": "input",
+      "refersTo": "field-outlined",
+      "description": "Search field with 14dp corners and native role colors. The label preserves context in the preview.",
+      "html": "<label class=\"ds-search\"><span class=\"ds-search-label\">Search music</span><span class=\"ds-search-box\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" aria-hidden=\"true\"><circle cx=\"10\" cy=\"10\" r=\"6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"m15 15 6 6\" stroke=\"currentColor\" stroke-width=\"2\"/></svg><input class=\"ds-search-input\" placeholder=\"Songs, artists, albums…\"/></span></label>",
+      "css": ".ds-search{font-family:Roboto,Arial,sans-serif;display:block;width:320px;max-width:100%;color:#B8C8BE}.ds-search-label{display:block;font-size:12px;margin-bottom:6px}.ds-search-box{display:flex;align-items:center;gap:12px;border:1px solid #728A7C;border-radius:14px;padding:12px 16px;min-height:24px;background:#091F16}.ds-search-input{font-family:Roboto,Arial,sans-serif;width:100%;min-width:0;background:transparent;border:0;color:#F5FAF6;font-size:16px;outline:0}.ds-search-input::placeholder{color:#B8C8BE}.ds-search-box:hover{border-color:#F5FAF6}.ds-search-box:focus-within{border-color:#1ED76A;outline:1px solid #1ED76A}"
+    },
+    {
+      "name": "Selected filter chip",
+      "kind": "chip",
+      "refersTo": "filter-selected",
+      "description": "Selected discovery/category filter; native minimum height is 48dp.",
+      "html": "<button class=\"ds-chip-selected\" aria-pressed=\"true\">All</button>",
+      "css": ".ds-chip-selected{font-family:Roboto,Arial,sans-serif;min-height:48px;border:0;border-radius:999px;padding:0 24px;background:#1ED76A;color:#00210D;font-size:14px;font-weight:700}.ds-chip-selected:focus-visible{outline:2px solid #1ED76A;outline-offset:3px}.ds-chip-selected:hover{filter:brightness(1.08)}.ds-chip-selected:active{filter:brightness(.92)}"
+    },
+    {
+      "name": "Unselected filter chip",
+      "kind": "chip",
+      "refersTo": "filter-unselected",
+      "description": "Outlined filter awaiting selection.",
+      "html": "<button class=\"ds-chip-unselected\" aria-pressed=\"false\">Music</button>",
+      "css": ".ds-chip-unselected{font-family:Roboto,Arial,sans-serif;min-height:48px;border:1px solid #728A7C;border-radius:999px;padding:0 24px;background:#00160D;color:#B8C8BE;font-size:14px;font-weight:700}.ds-chip-unselected:focus-visible{outline:2px solid #1ED76A;outline-offset:3px}.ds-chip-unselected:hover{filter:brightness(1.08)}.ds-chip-unselected:active{filter:brightness(.92)}"
+    },
+    {
+      "name": "Artwork shelf item",
+      "kind": "card",
+      "refersTo": "artwork-card",
+      "description": "148dp artwork square with a separate un-clipped caption. Uses the implemented music-note image fallback in this panel specimen.",
+      "html": "<button class=\"ds-art-card\"><span class=\"ds-art-image\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M12 3v10.6a4 4 0 1 0 2 3.4V7h6V3z\"/></svg></span><span class=\"ds-art-title\">Track title</span><span class=\"ds-art-artist\">Artist name</span></button>",
+      "css": ".ds-art-card{font-family:Roboto,Arial,sans-serif;display:block;width:148px;background:transparent;border:0;padding:0;text-align:left;color:#F5FAF6}.ds-art-image{display:flex;align-items:center;justify-content:center;width:148px;height:148px;overflow:hidden;border-radius:14px;background:#20352A;color:#B8C8BE}.ds-art-title{display:block;margin-top:9px;font-size:14px;font-weight:600;line-height:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ds-art-artist{display:block;margin-top:3px;font-size:12px;line-height:18px;color:#B8C8BE}.ds-art-card:focus-visible{outline:2px solid #1ED76A;outline-offset:3px}.ds-art-card:hover{filter:brightness(1.08)}.ds-art-card:active{filter:brightness(.92)}"
+    },
+    {
+      "name": "Active track row",
+      "kind": "custom",
+      "refersTo": "song-row-active",
+      "description": "Current track stays green when paused; the playing bars are a static state indicator. Artwork uses the native fallback here.",
+      "html": "<button class=\"ds-track\"><span class=\"ds-track-art\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M12 3v10.6a4 4 0 1 0 2 3.4V7h6V3z\"/></svg></span><span class=\"ds-track-copy\"><span class=\"ds-track-title\">Current track</span><span class=\"ds-track-artist\">Artist name</span></span><span class=\"ds-track-bars\" aria-label=\"Playing\"><i></i><i></i><i></i><i></i></span></button>",
+      "css": ".ds-track{font-family:Roboto,Arial,sans-serif;display:flex;align-items:center;width:360px;max-width:100%;padding:9px 10px;border:0;border-radius:16px;background:#1ED76A;color:#00210D;text-align:left}.ds-track-art{display:flex;align-items:center;justify-content:center;width:54px;height:54px;flex-shrink:0;border-radius:14px;background:#20352A;color:#B8C8BE}.ds-track-copy{flex:1;min-width:0;margin:0 12px}.ds-track-title{display:block;font-size:16px;font-weight:600;line-height:22px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ds-track-artist{display:block;margin-top:3px;font-size:14px;line-height:21px}.ds-track-bars{display:flex;align-items:center;gap:3px;width:22px;height:24px}.ds-track-bars i{width:3px;height:10px;border-radius:999px;background:currentColor}.ds-track-bars i:nth-child(2){height:22px}.ds-track-bars i:nth-child(3){height:15px}.ds-track-bars i:nth-child(4){height:8px}.ds-track:focus-visible{outline:2px solid #1ED76A;outline-offset:3px}.ds-track:hover{filter:brightness(1.08)}.ds-track:active{filter:brightness(.92)}"
+    },
+    {
+      "name": "Compact navigation",
+      "kind": "nav",
+      "refersTo": "navigation-compact",
+      "description": "Four persistent destinations below the mini-player on compact screens. The rail replaces this at 700dp.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Main\"><button class=\"ds-nav-item ds-nav-selected\" aria-current=\"page\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"m12 3 10 9h-3v9h-5v-6h-4v6H5v-9H2z\"/></svg><span>Home</span></button><button class=\"ds-nav-item\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" aria-hidden=\"true\"><circle cx=\"10\" cy=\"10\" r=\"6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"m15 15 6 6\" stroke=\"currentColor\" stroke-width=\"2\"/></svg><span>Search</span></button><button class=\"ds-nav-item\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" aria-hidden=\"true\"><path d=\"M3 3v18h18M7 3v14h14V3zM12 6h6v5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/></svg><span>Your library</span></button><button class=\"ds-nav-item\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" aria-hidden=\"true\"><path d=\"M12 3v18M3 12h18\" stroke=\"currentColor\" stroke-width=\"2\"/></svg><span>Create</span></button></nav>",
+      "css": ".ds-nav{font-family:Roboto,Arial,sans-serif;display:flex;align-items:center;min-height:72px;width:380px;max-width:100%;background:#00160D}.ds-nav-item{font-family:Roboto,Arial,sans-serif;display:flex;flex:1;align-items:center;flex-direction:column;gap:4px;min-height:64px;padding:6px 2px;border:0;border-radius:16px;background:transparent;color:#B8C8BE;font-size:12px;font-weight:500}.ds-nav-selected{color:#F5FAF6}.ds-nav-selected svg{background:#0C2C1B;border-radius:999px;padding:4px 16px}.ds-nav-item:hover{background:#091F16}.ds-nav-item:focus-visible{outline:2px solid #1ED76A;outline-offset:-2px}.ds-nav-item:active{filter:brightness(.9)}"
+    },
+    {
+      "name": "Mini-player",
+      "kind": "custom",
+      "refersTo": "mini-player",
+      "description": "Secondary-container playback strip with 48dp artwork and a 2dp progress line. Buttons illustrate the native controls.",
+      "html": "<div class=\"ds-mini\"><div class=\"ds-mini-row\"><button class=\"ds-mini-open\" aria-label=\"Open player\"><span class=\"ds-mini-art\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M12 3v10.6a4 4 0 1 0 2 3.4V7h6V3z\"/></svg></span><span class=\"ds-mini-copy\"><strong class=\"ds-mini-title\">Current track</strong><span class=\"ds-mini-artist\">Artist name</span></span></button><button class=\"ds-mini-control\" aria-label=\"Like song\">♡</button><button class=\"ds-mini-control\" aria-label=\"Play\"><svg viewBox=\"0 0 24 24\" width=\"32\" height=\"32\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M8 5v14l11-7z\"/></svg></button></div><div class=\"ds-mini-progress\"><span></span></div></div>",
+      "css": ".ds-mini{font-family:Roboto,Arial,sans-serif;width:380px;max-width:100%;border:1px solid #344D3F;border-radius:16px;background:#2A3D32;color:#F5FAF6;overflow:hidden}.ds-mini-row{display:flex;align-items:center;padding:7px 6px 5px 8px}.ds-mini-open{font-family:Roboto,Arial,sans-serif;display:flex;align-items:center;flex:1;min-width:0;padding:0;border:0;background:transparent;color:inherit;text-align:left}.ds-mini-art{display:flex;align-items:center;justify-content:center;width:48px;height:48px;flex-shrink:0;border-radius:14px;background:#20352A;color:#B8C8BE}.ds-mini-copy{min-width:0;margin:0 12px}.ds-mini-title{display:block;font-size:14px;font-weight:600;line-height:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ds-mini-artist{display:block;color:#B8C8BE;font-size:12px;line-height:18px}.ds-mini-control{display:flex;align-items:center;justify-content:center;width:48px;height:48px;flex-shrink:0;border:0;border-radius:50%;background:transparent;color:#F5FAF6;font-size:28px}.ds-mini-progress{height:2px;margin:0 12px;background:#344D3F}.ds-mini-progress span{display:block;width:40%;height:2px;background:#1ED76A}.ds-mini-open:hover,.ds-mini-control:hover{filter:brightness(1.15)}.ds-mini-open:focus-visible,.ds-mini-control:focus-visible{outline:2px solid #1ED76A;outline-offset:-2px}.ds-mini-control:active{background:#20352A}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The supplied forest-green music reference",
+    "overview": "Sortify uses the user's pinned forest-green music reference and supplied green S mark. Near-black green surfaces, clear white type, bright playback controls, square artwork, and circular artists carry that reference across a native Kotlin and Jetpack Compose app. This is an Operate surface: discovery stays image-led while controls and labels remain familiar Android controls.\n\nThe light appearance preserves the same role relationships through pale green surfaces, dark text, and a deeper green primary. The interface is compact enough for browsing a music collection, with larger welcome and section headings creating hierarchy. The product needs no account; the visual system supports a local personal library without implying a connected sign-in service.",
+    "keyCharacteristics": [
+      "Forest-green tonal surfaces with vivid green playback and active-track states.",
+      "Artwork-led browsing with captions outside artwork clipping.",
+      "Roboto/system Sans with bold headings and quiet supporting text.",
+      "Persistent playback controls and native phone/tablet navigation.",
+      "Dark, Light, and System appearances with the same semantic roles."
+    ],
+    "rules": [
+      {
+        "name": "The Role Pairing Rule",
+        "body": "Use each theme's foreground with its matching container. Playback green and active-track green keep the deep-green foreground in both appearances.",
+        "section": "colors"
+      },
+      {
+        "name": "The Caption Boundary Rule",
+        "body": "Clip artwork and collages to their image shape; never apply the artwork clip to the Column that also contains captions.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tonal Depth Rule",
+        "body": "Use the existing green surface roles, restrained borders, and artwork scrims for hierarchy. Leave modal depth and interaction feedback to native Material 3.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do use the supplied Sortify S mark and the theme's green primary for the brand.",
+      "Do use dp for dimensions and sp for text, with Roboto/system Sans and the extracted type roles.",
+      "Do preserve at least 48dp targets for shared icon actions and filter chips.",
+      "Do keep the mini-player above compact navigation whenever a current track exists.",
+      "Do let captions and supporting text measure to their content height, including at increased font scale.",
+      "Do show loading, retry, no-results, empty-library, selected, playing, paused, and downloaded states using the shared patterns.",
+      "Do use the rail at 700dp and above, with the main content constrained to 900dp."
+    ],
+    "donts": [
+      "Don't replace the supplied forest-green visual direction or green Sortify identity with a new palette or mark.",
+      "Don't clip caption Columns to artwork corners or a fixed artwork height.",
+      "Don't use the bright playback green with white text; preserve its deep-green foreground.",
+      "Don't stretch the player cover beyond its responsive size cap or place compact navigation on the full player and queue screens.",
+      "Don't add a sign-in presentation that implies an account service exists."
+    ]
+  }
+}
+

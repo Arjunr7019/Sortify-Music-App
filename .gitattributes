@@ -1,0 +1,3 @@
+# The Gradle wrapper must run on Linux GitHub Actions runners after Windows edits.
+gradlew text eol=lf
+*.yml text eol=lf
