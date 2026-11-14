@@ -8,7 +8,14 @@ Original captures from the Android API 35 emulator. See [verification details](.
 | Language setup | [languages-phone.png](languages-phone.png) |
 | Home | [home-phone.png](home-phone.png) |
 | Playlist | [playlist-phone.png](playlist-phone.png) |
-| Full player | [player-phone.png](player-phone.png) |
+| Full player (earlier baseline) | [player-phone.png](player-phone.png) |
+| Player expanded by swipe (2.0.1) | [gesture-expanded-phone.png](gesture-expanded-phone.png) |
+| Playlist before expansion (2.0.1) | [gesture-browse-before-phone.png](gesture-browse-before-phone.png) |
+| Playlist after collapse (2.0.1) | [gesture-collapsed-phone.png](gesture-collapsed-phone.png) |
+| Search retained after collapse (2.0.1) | [gesture-search-preserved-phone.png](gesture-search-preserved-phone.png) |
+| Player at 130% text size (2.0.1) | [gesture-player-font130-phone.png](gesture-player-font130-phone.png) |
+| Player on wide layout (2.0.1) | [gesture-player-tablet.png](gesture-player-tablet.png) |
+| Wide layout after collapse (2.0.1) | [gesture-collapsed-tablet.png](gesture-collapsed-tablet.png) |
 | Play queue | [queue-phone.png](queue-phone.png) |
 | Search results | [search-results-phone.png](search-results-phone.png) |
 | Library | [library-phone.png](library-phone.png) |
@@ -21,4 +28,4 @@ Original captures from the Android API 35 emulator. See [verification details](.
 | Enlarged text | [home-font130-phone.png](home-font130-phone.png) |
 | Wide layout | [home-tablet.png](home-tablet.png) |
 
-These are live app screens with a test library, real catalog metadata, and actual playback state. They are not generated mockups. Original pixels are preserved; PNG metadata identifies each capture's origin.
+These are live app screens with a test library, real catalog metadata, and actual playback state. They are not generated mockups. Original pixels are preserved. The 2.0.1 gesture captures come directly from `adb exec-out screencap -p`; their origin and hashes are recorded in [gesture-provenance.json](gesture-provenance.json). The original [gesture recording](../player-gestures.mp4) shows expansion and collapse in motion.

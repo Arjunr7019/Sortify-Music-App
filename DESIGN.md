@@ -272,13 +272,13 @@ Discovery uses vertical scrolling with horizontal artwork shelves. Standard shel
 
 Below 700dp available width, Home, Search, Your library, and Create live in a bottom navigation bar with a minimum height of 72dp. At 700dp and above they move to a native leading rail; expanded main content is centered and capped at 900dp (the compact cap is 700dp). This is an adaptive native layout, not a stretched phone canvas.
 
-The mini-player remains in the scaffold bottom area above compact navigation whenever a current track exists; on expanded layouts it remains below main content beside the rail. Full Player and Queue omit this navigation and mini-player. Scroll content receives scaffold padding so it can be reached above those controls.
+The mini-player remains in the scaffold bottom area above compact navigation whenever a current track exists; on expanded layouts it remains below main content beside the rail. Full Player and Queue cover this navigation and mini-player with an overlay, keeping the browsing composition and its scroll position mounted underneath. Covered browsing content is hidden from accessibility while either route is open. Scroll content receives scaffold padding so it can be reached above those controls.
 
 The player cover size is the smallest of available width minus 56dp, 39% of available height, and 390dp. The player itself scrolls on short screens. Welcome switches to a shorter mark composition below 650dp available height.
 
 ## Elevation & Depth
 
-The base system is flat and tonal: a subtle green vertical background wash, surface-role changes, fine outlines, and dark artwork scrims establish hierarchy. The mini-player has a fine boundary rather than a custom drop shadow. Modals and sheets use native Material 3 elevation and scrims; there is no app-defined shadow or animation token scale.
+The base system is flat and tonal: a subtle green vertical background wash, surface-role changes, fine outlines, and dark artwork scrims establish hierarchy. The mini-player has a fine boundary rather than a custom drop shadow. Modals and sheets use native Material 3 elevation and scrims; there is no app-defined shadow scale. The player overlay follows vertical drags and settles with FastOutSlowIn easing: 320ms to expand and 240ms to collapse, respecting Android animation duration scale.
 
 **The Tonal Depth Rule.** Use the existing green surface roles, restrained borders, and artwork scrims for hierarchy. Leave modal depth and interaction feedback to native Material 3.
 
@@ -324,7 +324,7 @@ A 54dp artwork thumbnail, weighted title/artist column, and options action sit i
 
 ### Persistent mini-player
 
-A secondary-container surface with a fine outline and 16dp corners holds 48dp art, title, artist, favourite, and play/pause actions. A 2dp progress strip anchors its bottom. Tapping the surface opens the full player; buffering replaces play/pause with a spinner, and liked state changes the heart and its tint.
+A secondary-container surface with a fine outline and 16dp corners holds 48dp art, title, artist, favourite, and play/pause actions. A 2dp progress strip anchors its bottom. Tapping or swiping up on the surface opens the full player; swiping down on the full player header or artwork collapses it. Short, slow drags return to the initial state, directional flings take precedence, and horizontal drags cancel accidental taps. The seek bar and transport controls remain outside the dismissal gesture area; buffering replaces play/pause with a spinner, and liked state changes the heart and its tint.
 
 ### Dialogs, sheets, and feedback
 

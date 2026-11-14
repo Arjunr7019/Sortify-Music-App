@@ -34,6 +34,7 @@ class SortifyViewModel(app: Application) : AndroidViewModel(app) {
     private val repo = MusicRepository(app)
     var stage by mutableStateOf(if (repo.onboarded) 2 else 0); private set
     var screen by mutableStateOf(Screen.Home); private set
+    var playerOrigin by mutableStateOf(Screen.Home); private set
     var tab by mutableStateOf(Screen.Home); private set
     private val backStack = mutableStateListOf<Screen>()
     var theme by mutableStateOf(repo.theme); private set
@@ -133,7 +134,12 @@ class SortifyViewModel(app: Application) : AndroidViewModel(app) {
         updateLanguages(selected)
         repo.onboarded = true; stage = 2; refreshHome()
     }
-    fun open(destination: Screen) { backStack += screen; screen = destination }
+    fun open(destination: Screen) {
+        if (destination == screen) return
+        if (destination == Screen.Player && screen != Screen.Queue) playerOrigin = screen
+        backStack += screen
+        screen = destination
+    }
     fun switchTab(destination: Screen) { backStack.clear(); screen = destination; tab = destination }
     fun back(): Boolean {
         if (stage == 1) { stage = 0; return true }

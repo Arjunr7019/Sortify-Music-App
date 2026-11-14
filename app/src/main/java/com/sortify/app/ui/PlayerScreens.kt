@@ -28,9 +28,9 @@ import com.sortify.app.SortifyViewModel
 import com.sortify.app.data.timeLabel
 
 @Composable
-fun MiniPlayer(vm: SortifyViewModel) {
+fun MiniPlayer(vm: SortifyViewModel, modifier: Modifier = Modifier) {
     val song = vm.current ?: return
-    Surface(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 5.dp), shape = RoundedCornerShape(16.dp), color = MaterialTheme.colorScheme.secondaryContainer, border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)) {
+    Surface(modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 5.dp), shape = RoundedCornerShape(16.dp), color = MaterialTheme.colorScheme.secondaryContainer, border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)) {
         Column(Modifier.clickable { vm.open(Screen.Player) }) {
             Row(Modifier.padding(start = 8.dp, top = 7.dp, bottom = 5.dp, end = 6.dp), verticalAlignment = Alignment.CenterVertically) {
                 Artwork(song.art(), Modifier.size(48.dp))
@@ -48,21 +48,23 @@ fun MiniPlayer(vm: SortifyViewModel) {
 }
 
 @Composable
-fun PlayerScreen(vm: SortifyViewModel) {
+fun PlayerScreen(vm: SortifyViewModel, modifier: Modifier = Modifier, dismissGesture: Modifier = Modifier) {
     val song = vm.current ?: return
     var timerDialog by remember { mutableStateOf(false) }
-    BoxWithConstraints(Modifier.fillMaxSize()) {
+    BoxWithConstraints(modifier.fillMaxSize()) {
         val coverSize = minOf(maxWidth - 56.dp, maxHeight * .39f, 390.dp)
         Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 26.dp, vertical = 8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Row(Modifier.fillMaxWidth().padding(bottom = 20.dp), verticalAlignment = Alignment.CenterVertically) {
-                ActionIcon(Icons.Rounded.KeyboardArrowDown, "Close player") { vm.back() }
-                Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Now playing", style = MaterialTheme.typography.titleSmall)
-                    Text(song.album.ifBlank { "Your music" }, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Column(dismissGesture.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                Row(Modifier.fillMaxWidth().padding(bottom = 20.dp), verticalAlignment = Alignment.CenterVertically) {
+                    ActionIcon(Icons.Rounded.KeyboardArrowDown, "Close player") { if (vm.screen == Screen.Player) vm.back() }
+                    Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text("Now playing", style = MaterialTheme.typography.titleSmall)
+                        Text(song.album.ifBlank { "Your music" }, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    }
+                    ActionIcon(Icons.Rounded.MoreHoriz, "Song options") { vm.songMenu = song }
                 }
-                ActionIcon(Icons.Rounded.MoreHoriz, "Song options") { vm.songMenu = song }
+                Artwork(song.art(), Modifier.size(coverSize), description = "Cover for ${song.title}")
             }
-            Artwork(song.art(), Modifier.size(coverSize), description = "Cover for ${song.title}")
             Row(Modifier.fillMaxWidth().padding(top = 28.dp), verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
                     Text(song.title, style = MaterialTheme.typography.headlineMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)

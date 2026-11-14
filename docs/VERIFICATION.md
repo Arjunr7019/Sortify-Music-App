@@ -9,8 +9,8 @@ Verified on 14 November 2026 using the installed Android 15 / API 35 emulator. T
 ```
 
 - APK compilation and packaging: passed.
-- APK signing check: `apksigner verify --verbose` passed using APK Signature Scheme v2. Manifest inspection confirms `com.sortify.app`, version 1.0.0, minimum SDK 26, target SDK 35.
-- Unit tests: **5 passed, 0 failures, 0 errors**.
+- APK signing check: `apksigner verify --verbose` passed using APK Signature Scheme v2. Manifest inspection confirms `com.sortify.app`, version 2.0.1 (version code 2), minimum SDK 26, target SDK 35.
+- Unit tests: **10 passed, 0 failures, 0 errors** (five playback policy tests and five player gesture policy tests).
 - Android lint: **0 errors, 19 warnings, 5 hints**. Advisories include available dependency updates, the selected target SDK, media-service export, backup configuration, and Kotlin extension suggestions. No lint baseline or error suppression was used to pass the checks.
 - Runtime logs: no app `AndroidRuntime` crashes or ExoPlayer playback errors during the recorded flows.
 - All 16 bundled cover-art files have embedded origin metadata and entries in `app/src/main/assets/provenance.json`.
@@ -33,6 +33,22 @@ Verified on 14 November 2026 using the installed Android 15 / API 35 emulator. T
 | Persistence | Force-stopped and reopened app; onboarding, playlist, favourite, download, recent listening, quality, and appearance remained saved. |
 | Themes and quality | Changed 160 → 320 kbps; switched light/dark; inspected quality selection dialog and light settings. |
 | Layout | Captured phone, 130% font-scale home/library, and wide-layout home/library with a navigation rail. Restored resolution, density, night mode, and font scale afterward. |
+
+## Player gesture update (2.0.1)
+
+Built and installed the updated debug APK on 14 November 2026. `scripts/verify_player_gestures.py` checks the player interactions on the dedicated `emulator-5554`; complete onboarding first. The source document described version 1.0.1, but this repository was already at 2.0.0, so this update uses 2.0.1.
+
+- Short upward and horizontal mini-player drags keep it collapsed; taps and deliberate upward swipes expand it.
+- Short downward drags keep the full player open; deliberate drags on either the header or artwork collapse it.
+- Visible playlist text and bounds matched before and after expanding/collapsing. Android's media session stayed `PLAYING` with advancing position.
+- Seeking, mini-player play/pause, queue navigation, and system Back passed. Back from Queue returns to Player, then to the original browsing screen.
+- Gestures also passed with `animator_duration_scale=0`; the previous setting was restored afterward.
+- Opening the player from a focused Search field cleared focus and dismissed the keyboard. Collapsing retained the `Blinding Lights` query without refocusing the field.
+- The player expanded at 130% system font scale and expanded/collapsed at the 1600 ? 2560 / density 240 wide-layout override. Inspected the direct captures; all settings were restored afterward.
+- The expanded player's accessibility tree omitted the covered Home and library navigation controls.
+- The original [gesture recording](player-gestures.mp4) and [resting captures](screenshots/README.md) were captured directly from the emulator. Playback continuity is based on media-session state, not an audible-output claim.
+
+The build, unit tests, Android lint, and APK signature verification passed. Lint still reports 19 warnings and five hints. An initial build encountered a Windows lock on generated `R.jar`; a retry using a fresh Gradle daemon completed successfully.
 
 ## Capture environment
 

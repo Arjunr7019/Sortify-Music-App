@@ -39,7 +39,7 @@ both branches, publishing tags, and signing/update limitations.
 - **Library:** liked songs, personal playlists, downloads, and recent songs; filter and sort playlists.
 - **Create:** name a playlist and optionally start with selected tracks. Cover artwork follows its contents.
 - **Playlist details:** play, shuffle, save catalog mixes to your library, download, share, rename, delete, and remove tracks.
-- **Player:** real audio streaming, seek, previous/next, shuffle, repeat all/one, favourites, download, sleep timer, and queue.
+- **Player:** tap or swipe up on the mini-player to expand; swipe down on the full player header or artwork to collapse. The player follows your finger and settles smoothly; short drags snap back. Browsing stays mounted to preserve its scroll position. Real audio streaming, seek, previous/next, shuffle, repeat all/one, favourites, download, sleep timer, and queue remain available.
 - **Queue:** play a queued track, move tracks earlier, and remove tracks.
 - **Settings:** dark/light/system appearance, 96/160/320 kbps quality, languages, sleep timer, download management, and app information.
 - Persistent mini-player, Android system Back, edge-to-edge insets, and navigation rail on wider layouts.
@@ -76,7 +76,7 @@ The optional `--insecure-proxy` argument is solely for the local development pro
 .\gradlew.bat :app:testDebugUnitTest :app:lintDebug :app:assembleDebug
 ```
 
-Playback policy tests cover bitrate fallback, exact quality, offline preference, insecure/absent streams, and duration formatting. `scripts/ui_smoke.py` drives the installed app through Android accessibility nodes and captures original emulator screenshots. Run it on a dedicated emulator with serial `emulator-5554`; its test playlist persists. See [docs/VERIFICATION.md](docs/VERIFICATION.md) for the recorded runtime checks and limitations.
+Playback policy tests cover bitrate fallback, exact quality, offline preference, insecure/absent streams, and duration formatting. Player gesture policy tests cover deliberate swipes, short drags, directional flings, and reversals. Run `python scripts/verify_player_gestures.py` on the dedicated `emulator-5554` after onboarding to check gestures, playback continuity, retained playlist position, seeking, queue/Back navigation, and reduced motion. `scripts/ui_smoke.py` drives the installed app through Android accessibility nodes and captures original emulator screenshots. Run it on a dedicated emulator with serial `emulator-5554`; its test playlist persists. See [docs/VERIFICATION.md](docs/VERIFICATION.md) for the recorded runtime checks and limitations.
 
 ## Project layout
 
@@ -88,7 +88,7 @@ app/src/main/java/com/sortify/app/
   playback/PlaybackService.kt   Media3 playback and media session
   ui/                          Theme, artwork loader, reusable controls, screens
 app/src/main/assets/            Browse catalog, original artwork, provenance
-app/src/test/                   Playback policy tests
+app/src/test/                   Playback and player gesture policy tests
 docs/                          Reference assets, screenshots, verification
 Sortify-Music-App-main/         Supplied React Native source, kept as reference
 ```

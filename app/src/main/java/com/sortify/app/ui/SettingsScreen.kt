@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.sortify.app.BuildConfig
 import com.sortify.app.Screen
 import com.sortify.app.SortifyViewModel
 
@@ -35,7 +36,7 @@ fun SettingsScreen(vm: SortifyViewModel) {
                 SettingsRow(Icons.Rounded.DownloadDone, "Offline music", "${vm.downloads.size} downloaded songs") { vm.open(Screen.Downloads) }
                 SettingsRow(Icons.Rounded.DeleteOutline, "Remove all downloads", "Free up the audio storage on this device") { if (vm.downloads.isEmpty()) vm.message("There are no downloads to remove") else dialog = "clear" }
                 SectionTitle("About")
-                SettingsRow(Icons.Rounded.Info, "About Sortify", "Version 1.0.0") { dialog = "about" }
+                SettingsRow(Icons.Rounded.Info, "About Sortify", "Version ${BuildConfig.VERSION_NAME}") { dialog = "about" }
                 Text("Your playlists, likes, downloads, and preferences stay on this device. Uninstalling Sortify removes them.", Modifier.padding(top = 24.dp, bottom = 24.dp), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
@@ -45,7 +46,7 @@ fun SettingsScreen(vm: SortifyViewModel) {
         "theme" -> ChoiceDialog("Appearance", listOf("Dark", "Light", "System"), vm.theme, { vm.updateTheme(it); dialog = "" }, { dialog = "" })
         "sleep" -> ChoiceDialog("Sleep timer", listOf("Off", "15 minutes", "30 minutes", "60 minutes"), if (vm.sleepMinutes == 0) "Off" else "${vm.sleepMinutes} minutes", { vm.setSleepTimer(it.substringBefore(" ").toIntOrNull() ?: 0); dialog = "" }, { dialog = "" })
         "clear" -> AlertDialog(onDismissRequest = { dialog = "" }, title = { Text("Remove all downloads?") }, text = { Text("You’ll need an internet connection to play these songs again. You can download them later.") }, confirmButton = { TextButton({ vm.clearDownloads(); dialog = "" }) { Text("Remove downloads") } }, dismissButton = { TextButton({ dialog = "" }) { Text("Cancel") } })
-        "about" -> AlertDialog(onDismissRequest = { dialog = "" }, icon = { BrandMark() }, title = { Text("Sortify 1.0.0") }, text = { Text("A native Kotlin music player.\n\nMusic search and streaming use a compatible third-party Saavn service. Catalog and playback availability depend on that service and your region.\n\nNo account required. Your library is saved locally.") }, confirmButton = { TextButton({ dialog = "" }) { Text("Done") } })
+        "about" -> AlertDialog(onDismissRequest = { dialog = "" }, icon = { BrandMark() }, title = { Text("Sortify ${BuildConfig.VERSION_NAME}") }, text = { Text("A native Kotlin music player.\n\nMusic search and streaming use a compatible third-party Saavn service. Catalog and playback availability depend on that service and your region.\n\nNo account required. Your library is saved locally.") }, confirmButton = { TextButton({ dialog = "" }) { Text("Done") } })
     }
 }
 

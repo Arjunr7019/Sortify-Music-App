@@ -1,0 +1,72 @@
+[
+  {
+    "file": "gesture-browse-before-phone.png",
+    "origin": "Direct adb exec-out screencap -p capture; no pixel editing",
+    "device": "Medium_Phone_API_35 emulator (API 35)",
+    "app_version": "2.0.1",
+    "date": "2026-11-14",
+    "font_scale": 1.0,
+    "display": "1080x2400 at density 420",
+    "sha256": "73faa0a9867f1159cb6bf088669729ae42151bd2a8a717b01202cef130a8ded4"
+  },
+  {
+    "file": "gesture-expanded-phone.png",
+    "origin": "Direct adb exec-out screencap -p capture; no pixel editing",
+    "device": "Medium_Phone_API_35 emulator (API 35)",
+    "app_version": "2.0.1",
+    "date": "2026-11-14",
+    "font_scale": 1.0,
+    "display": "1080x2400 at density 420",
+    "sha256": "6953c342ce1da40f3abc8f06291094b163a6ba1fe26c4aa56a33d09d6c065a31"
+  },
+  {
+    "file": "gesture-collapsed-phone.png",
+    "origin": "Direct adb exec-out screencap -p capture; no pixel editing",
+    "device": "Medium_Phone_API_35 emulator (API 35)",
+    "app_version": "2.0.1",
+    "date": "2026-11-14",
+    "font_scale": 1.0,
+    "display": "1080x2400 at density 420",
+    "sha256": "8b3927be0a5d612802874ea7cad4b1f3004f4f96370630751a1846b18d6dfe7d"
+  },
+  {
+    "file": "gesture-search-preserved-phone.png",
+    "origin": "Direct adb exec-out screencap -p capture; no pixel editing",
+    "device": "Medium_Phone_API_35 emulator (API 35)",
+    "app_version": "2.0.1",
+    "date": "2026-11-14",
+    "font_scale": 1.0,
+    "display": "1080x2400 at density 420",
+    "sha256": "b53c7c3f0c4650fe2be549019c85ded3d991957d1e095c2aa64f7f9849cce256"
+  },
+  {
+    "file": "gesture-player-font130-phone.png",
+    "origin": "Direct adb exec-out screencap -p capture; no pixel editing",
+    "device": "Medium_Phone_API_35 emulator (API 35)",
+    "app_version": "2.0.1",
+    "date": "2026-11-14",
+    "font_scale": 1.3,
+    "display": "1080x2400 at density 420",
+    "sha256": "4a3b69497e380e84232479a42ab21e436111139a59d92d8415f9c48792e8db9c"
+  },
+  {
+    "file": "gesture-player-tablet.png",
+    "origin": "Direct adb exec-out screencap -p capture; no pixel editing",
+    "device": "Medium_Phone_API_35 emulator (API 35)",
+    "app_version": "2.0.1",
+    "date": "2026-11-14",
+    "font_scale": 1.0,
+    "display": "1600x2560 at density 240 (wide-layout override)",
+    "sha256": "e706e8db191f4e72002edc261a609cda736adbde38a4e61ae66793ec603f9a75"
+  },
+  {
+    "file": "gesture-collapsed-tablet.png",
+    "origin": "Direct adb exec-out screencap -p capture; no pixel editing",
+    "device": "Medium_Phone_API_35 emulator (API 35)",
+    "app_version": "2.0.1",
+    "date": "2026-11-14",
+    "font_scale": 1.0,
+    "display": "1600x2560 at density 240 (wide-layout override)",
+    "sha256": "96f4e679ce9bcbc1aee424347f8161171323fbff259a890ec72b00eb64bdcf45"
+  }
+]
