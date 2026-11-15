@@ -26,6 +26,9 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import java.util.UUID
 
 enum class Screen { Home, Search, Library, Create, Playlist, Favorites, Downloads, Settings, Languages, Player, Queue }
@@ -48,12 +51,20 @@ class SortifyViewModel(app: Application) : AndroidViewModel(app) {
     var trending by mutableStateOf<Map<String, List<Song>>>(emptyMap()); private set
     var refreshing by mutableStateOf(false); private set
     var homeError by mutableStateOf<String?>(null); private set
+    var youtubeTrending by mutableStateOf<List<Song>>(emptyList()); private set
+    var youtubePlaylists by mutableStateOf<Map<String, List<CatalogItem>>>(emptyMap()); private set
+    var youtubeHomeLoading by mutableStateOf(false); private set
+    var youtubeTrendingError by mutableStateOf<String?>(null); private set
+    var youtubePlaylistErrors by mutableStateOf<Set<String>>(emptySet()); private set
+    private var homeJob: Job? = null
+    private var youtubeHomeJob: Job? = null
     var selectedPlaylist by mutableStateOf<Playlist?>(null); private set
     var detailLoading by mutableStateOf(false); private set
     var detailError by mutableStateOf<String?>(null); private set
     private var detailItem: CatalogItem? = null
 
     var query by mutableStateOf(""); private set
+    var searchProvider by mutableStateOf(repo.searchProvider); private set
     var searchKind by mutableStateOf("songs"); private set
     var searchResults by mutableStateOf<List<Song>>(emptyList()); private set
     var catalogResults by mutableStateOf<List<CatalogItem>>(emptyList()); private set
@@ -88,7 +99,9 @@ class SortifyViewModel(app: Application) : AndroidViewModel(app) {
                     addListener(object : Player.Listener {
                         override fun onEvents(player: Player, events: Player.Events) { syncPlayer() }
                         override fun onPlayerError(error: PlaybackException) {
-                            playbackError = "This track could not play. Check your connection and try again."
+                            playbackError = if (current?.provider == MusicProvider.YouTubeMusic)
+                                "YouTube Music could not play this track. It may require sign-in or be unavailable in your region. Try again or choose another song."
+                            else "This track could not play. Check your connection and try again."
                             message(playbackError!!)
                         }
                     })
@@ -111,7 +124,7 @@ class SortifyViewModel(app: Application) : AndroidViewModel(app) {
             val known = (downloads + recent + favorites + seed).associateBy { it.id }
             queue = (0 until player.mediaItemCount).map { index ->
                 val item = player.getMediaItemAt(index)
-                known[item.mediaId] ?: Song(item.mediaId, item.mediaMetadata.title?.toString().orEmpty(), item.mediaMetadata.artist?.toString().orEmpty(), image = item.mediaMetadata.artworkUri?.toString().orEmpty(), sources = item.localConfiguration?.uri?.toString()?.let { listOf(AudioSource(quality, it)) }.orEmpty())
+                known[item.mediaId] ?: Song(item.mediaId, item.mediaMetadata.title?.toString().orEmpty(), item.mediaMetadata.artist?.toString().orEmpty(), image = item.mediaMetadata.artworkUri?.toString().orEmpty(), sources = item.localConfiguration?.uri?.toString()?.let { listOf(AudioSource(quality, it)) }.orEmpty(), provider = if (item.mediaId.startsWith("yt:")) MusicProvider.YouTubeMusic else MusicProvider.JioSaavn)
             }
         }
         playing = player.isPlaying
@@ -154,33 +167,78 @@ class SortifyViewModel(app: Application) : AndroidViewModel(app) {
     fun updateLanguages(value: Set<String>) { if (value.isNotEmpty()) { languages = value; repo.languages = value } }
 
     fun refreshHome() {
-        if (refreshing) return
-        viewModelScope.launch {
+        homeJob?.cancel()
+        val selectedLanguages = languages.toSet()
+        trending = trending.filterKeys { it in selectedLanguages }
+        homeJob = viewModelScope.launch {
             refreshing = true; homeError = null
             val result = supervisorScope {
-                languages.map { language -> async {
-                    language to runCatching { repo.searchSongs("$language hit songs", 15) }
+                selectedLanguages.map { language -> async {
+                    language to cancellableResult { repo.searchSongs("$language hit songs", 15) }
                 } }.awaitAll()
             }
             trending = result.mapNotNull { (language, r) -> r.getOrNull()?.takeIf { it.isNotEmpty() }?.let { language to it } }.toMap()
             if (trending.isEmpty()) homeError = "Couldn’t refresh your music. Showing the saved catalog."
             refreshing = false
         }
+        refreshYouTubeHome()
+    }
+
+    fun refreshYouTubeHome() {
+        youtubeHomeJob?.cancel()
+        val selectedLanguages = languages.toSet()
+        youtubePlaylists = youtubePlaylists.filterKeys { it in selectedLanguages }
+        youtubeHomeJob = viewModelScope.launch {
+            youtubeHomeLoading = true; youtubeTrendingError = null; youtubePlaylistErrors = emptySet()
+            try {
+                supervisorScope {
+                    val chart = launch {
+                        cancellableResult { repo.youtubeTrending() }
+                            .onSuccess { youtubeTrending = it }
+                            .onFailure { youtubeTrendingError = "Couldn’t load trending YouTube Music. Check your connection and try again." }
+                    }
+                    val permits = Semaphore(3)
+                    val result = selectedLanguages.map { language -> async {
+                        language to permits.withPermit { cancellableResult { repo.youtubePlaylists(language) } }
+                    } }.awaitAll()
+                    youtubePlaylists = result.mapNotNull { (language, r) -> r.getOrNull()?.takeIf { it.isNotEmpty() }?.let { language to it } }.toMap()
+                    youtubePlaylistErrors = result.filter { it.second.getOrNull().isNullOrEmpty() }.map { it.first }.toSet()
+                    chart.join()
+                }
+            } finally { youtubeHomeLoading = false }
+        }
+    }
+
+    private suspend fun <T> cancellableResult(block: suspend () -> T): Result<T> = try {
+        Result.success(block())
+    } catch (e: CancellationException) { throw e } catch (e: Exception) { Result.failure(e) }
+
+    fun selectSearchProvider(provider: MusicProvider) {
+        if (provider == searchProvider) return
+        searchProvider = provider; repo.searchProvider = provider
+        search(immediate = true)
     }
 
     fun search(text: String = query, kind: String = searchKind, immediate: Boolean = false) {
         query = text; searchKind = kind; searchJob?.cancel()
         val generation = ++searchGeneration
+        val provider = searchProvider
         searchError = null
+        searchResults = emptyList(); catalogResults = emptyList()
         if (text.isBlank()) { searchResults = emptyList(); catalogResults = emptyList(); searching = false; return }
         searching = true
         searchJob = viewModelScope.launch {
             if (!immediate) delay(400)
             try {
-                if (kind == "songs") { searchResults = repo.searchSongs(text); catalogResults = emptyList() }
-                else { catalogResults = repo.searchCatalog(text, kind); searchResults = emptyList() }
+                if (kind == "songs") {
+                    val songs = repo.searchSongs(text, provider = provider)
+                    if (generation == searchGeneration) searchResults = songs
+                } else {
+                    val items = repo.searchCatalog(text, kind, provider)
+                    if (generation == searchGeneration) catalogResults = items
+                }
             } catch (e: kotlinx.coroutines.CancellationException) { throw e }
-            catch (_: Exception) { searchError = "Search couldn’t connect. Check your internet connection and try again." }
+            catch (_: Exception) { if (generation == searchGeneration) searchError = "${provider.label} search couldn’t connect. Check your internet connection and try again." }
             finally { if (generation == searchGeneration) searching = false }
         }
     }
@@ -196,10 +254,10 @@ class SortifyViewModel(app: Application) : AndroidViewModel(app) {
         val item = detailItem ?: return
         viewModelScope.launch {
             detailLoading = true; detailError = null
-            runCatching { repo.catalogSongs(item) }
-                .onSuccess { selectedPlaylist = selectedPlaylist?.copy(songs = it) }
-                .onFailure { detailError = "Couldn’t load these songs. Please try again." }
-            detailLoading = false
+            cancellableResult { repo.catalogSongs(item) }
+                .onSuccess { if (detailItem == item) selectedPlaylist = selectedPlaylist?.copy(songs = it) }
+                .onFailure { if (detailItem == item) detailError = "Couldn’t load these songs from ${item.provider.label}. Please try again." }
+            if (detailItem == item) detailLoading = false
         }
     }
 
@@ -263,7 +321,9 @@ class SortifyViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun Song.mediaItem(): MediaItem? {
         val local = downloads.find { it.id == id }?.takeIf { java.io.File(java.net.URI(it.localPath)).exists() }
-        val url = (local ?: copy(localPath = "")).audioUrl(quality) ?: return null
+        val url = local?.audioUrl(quality) ?: if (provider == MusicProvider.YouTubeMusic)
+            "https://music.youtube.com/watch?v=${id.removePrefix("yt:")}&sortify_quality=$quality"
+        else copy(localPath = "").audioUrl(quality) ?: return null
         return MediaItem.Builder().setMediaId(id).setUri(url).setMediaMetadata(
             MediaMetadata.Builder().setTitle(title).setArtist(artist).setAlbumTitle(album)
                 .setArtworkUri(image.takeIf { it.startsWith("https://") }?.let(Uri::parse)).build()

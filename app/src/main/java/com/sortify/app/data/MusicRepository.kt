@@ -12,6 +12,7 @@ import java.net.URLEncoder
 import com.sortify.app.BuildConfig
 
 class MusicRepository(private val context: Context) {
+    private val youtube = YouTubeMusicClient()
     private val prefs = context.getSharedPreferences("sortify", Context.MODE_PRIVATE)
     val initialSongs: List<Song> = runCatching {
         context.assets.open("catalog.json").bufferedReader().use { JSONArray(it.readText()).songs() }
@@ -29,6 +30,9 @@ class MusicRepository(private val context: Context) {
     var theme: String
         get() = prefs.getString("theme", "Dark")!!
         set(value) { prefs.edit().putString("theme", value).apply() }
+    var searchProvider: MusicProvider
+        get() = MusicProvider.fromValue(prefs.getString("searchProvider", "").orEmpty())
+        set(value) { prefs.edit().putString("searchProvider", value.name).apply() }
 
     fun loadSongs(key: String): List<Song> = runCatching { JSONArray(prefs.getString(key, "[]")).songs() }.getOrDefault(emptyList())
     fun saveSongs(key: String, songs: List<Song>) { prefs.edit().putString(key, songs.json().toString()).apply() }
@@ -50,12 +54,14 @@ class MusicRepository(private val context: Context) {
         } finally { connection.disconnect() }
     }
 
-    suspend fun searchSongs(query: String, limit: Int = 30): List<Song> {
+    suspend fun searchSongs(query: String, limit: Int = 30, provider: MusicProvider = MusicProvider.JioSaavn): List<Song> {
+        if (provider == MusicProvider.YouTubeMusic) return youtube.searchSongs(query, limit)
         val data = request("/search/songs?query=${encode(query)}&limit=$limit").optJSONObject("data")
         return data?.optJSONArray("results")?.songs().orEmpty().distinctBy { it.title.lowercase() to it.artist.lowercase() }
     }
 
-    suspend fun searchCatalog(query: String, kind: String): List<CatalogItem> {
+    suspend fun searchCatalog(query: String, kind: String, provider: MusicProvider = MusicProvider.JioSaavn): List<CatalogItem> {
+        if (provider == MusicProvider.YouTubeMusic) return youtube.searchCatalog(query, kind)
         val a = request("/search/$kind?query=${encode(query)}&limit=20").optJSONObject("data")?.optJSONArray("results") ?: JSONArray()
         return (0 until a.length()).map { a.getJSONObject(it) }.map { j ->
             val images = j.optJSONArray("image")
@@ -66,18 +72,21 @@ class MusicRepository(private val context: Context) {
     }
 
     suspend fun catalogSongs(item: CatalogItem): List<Song> {
+        if (item.provider == MusicProvider.YouTubeMusic) return youtube.catalogSongs(item)
         val path = if (item.kind == "artists") "/artists/${encode(item.id)}/songs?limit=30" else "/${item.kind}?id=${encode(item.id)}"
         val data = request(path).optJSONObject("data")
         return (data?.optJSONArray("songs") ?: data?.optJSONArray("results"))?.songs().orEmpty()
     }
 
     suspend fun download(song: Song, quality: String): Song = withContext(Dispatchers.IO) {
-        val url = song.copy(localPath = "").audioUrl(quality) ?: error("This song has no downloadable audio.")
+        val url = if (song.provider == MusicProvider.YouTubeMusic) youtube.resolveAudio(song.id.removePrefix("yt:"), quality)
+            else song.copy(localPath = "").audioUrl(quality) ?: error("This song has no downloadable audio.")
         val dir = File(context.filesDir, "downloads").apply { mkdirs() }
         val target = File(dir, song.id.replace(Regex("[^a-zA-Z0-9_-]"), "_") + ".m4a")
         val temp = File(dir, target.name + ".part")
         val conn = URI(url).toURL().openConnection() as HttpURLConnection
         conn.connectTimeout = 15_000; conn.readTimeout = 30_000
+        if (song.provider == MusicProvider.YouTubeMusic) conn.setRequestProperty("User-Agent", YouTubeMusicClient.USER_AGENT)
         try {
             check(conn.responseCode in 200..299) { "Download failed. Please try again." }
             val contentType = conn.contentType.orEmpty()
@@ -96,4 +105,7 @@ class MusicRepository(private val context: Context) {
     }
 
     private fun encode(value: String) = URLEncoder.encode(value, "UTF-8")
+
+    suspend fun youtubeTrending() = youtube.trending()
+    suspend fun youtubePlaylists(language: String) = youtube.languagePlaylists(language)
 }

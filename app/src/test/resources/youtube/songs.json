@@ -1,0 +1,247 @@
+{
+  "contents": [
+    {
+      "musicResponsiveListItemRenderer": {
+        "thumbnail": {
+          "musicThumbnailRenderer": {
+            "thumbnail": {
+              "thumbnails": [
+                {
+                  "url": "https://yt3.googleusercontent.com/B1p2-JcIuomNuey91o6bvshtrtw2gr0pH1bIviJxDqNZiT9et79lCgY4-pU-6FhVNWbi9FrnOtJ35t8=w60-h60-l90-rj",
+                  "width": 60,
+                  "height": 60
+                },
+                {
+                  "url": "https://yt3.googleusercontent.com/B1p2-JcIuomNuey91o6bvshtrtw2gr0pH1bIviJxDqNZiT9et79lCgY4-pU-6FhVNWbi9FrnOtJ35t8=w120-h120-l90-rj",
+                  "width": 120,
+                  "height": 120
+                }
+              ]
+            }
+          }
+        },
+        "flexColumns": [
+          {
+            "musicResponsiveListItemFlexColumnRenderer": {
+              "text": {
+                "runs": [
+                  {
+                    "text": "Gehra Hua (From \"Dhurandhar\")",
+                    "navigationEndpoint": {
+                      "watchEndpoint": {
+                        "videoId": "i1o1p_DD6TU",
+                        "watchEndpointMusicSupportedConfigs": {
+                          "watchEndpointMusicConfig": {
+                            "musicVideoType": "MUSIC_VIDEO_TYPE_ATV"
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "musicResponsiveListItemFlexColumnRenderer": {
+              "text": {
+                "runs": [
+                  {
+                    "text": "Shashwat Sachdev",
+                    "navigationEndpoint": {
+                      "browseEndpoint": {
+                        "browseId": "UCtIiZrzDsXk_rWeynT1ho4g"
+                      }
+                    }
+                  },
+                  {
+                    "text": ", "
+                  },
+                  {
+                    "text": "Arijit Singh",
+                    "navigationEndpoint": {
+                      "browseEndpoint": {
+                        "browseId": "UCDxKh1gFWeYsqePvgVzmPoQ"
+                      }
+                    }
+                  },
+                  {
+                    "text": ", "
+                  },
+                  {
+                    "text": "Armaan Khan",
+                    "navigationEndpoint": {
+                      "browseEndpoint": {
+                        "browseId": "UCpEuop7Sz7yS2a7K81O9RKA"
+                      }
+                    }
+                  },
+                  {
+                    "text": " & "
+                  },
+                  {
+                    "text": "Irshad Kamil",
+                    "navigationEndpoint": {
+                      "browseEndpoint": {
+                        "browseId": "UCb1SUoajGn8MrwgQDXZIt5A"
+                      }
+                    }
+                  },
+                  {
+                    "text": " • "
+                  },
+                  {
+                    "text": "Gehra Hua (From \"Dhurandhar\")",
+                    "navigationEndpoint": {
+                      "browseEndpoint": {
+                        "browseId": "MPREb_LRyvIPGcPKM"
+                      }
+                    }
+                  },
+                  {
+                    "text": " • "
+                  },
+                  {
+                    "text": "6:03"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "musicResponsiveListItemFlexColumnRenderer": {
+              "text": {
+                "runs": [
+                  {
+                    "text": "1B plays"
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "playlistItemData": {
+          "videoId": "i1o1p_DD6TU"
+        },
+        "flexColumnDisplayStyle": "MUSIC_RESPONSIVE_LIST_ITEM_FLEX_COLUMN_DISPLAY_STYLE_TWO_LINE_STACK",
+        "itemHeight": "MUSIC_RESPONSIVE_LIST_ITEM_HEIGHT_TALL"
+      }
+    },
+    {
+      "musicResponsiveListItemRenderer": {
+        "thumbnail": {
+          "musicThumbnailRenderer": {
+            "thumbnail": {
+              "thumbnails": [
+                {
+                  "url": "https://yt3.googleusercontent.com/XvvdvvJF54vqL_1FSspuGguIKMMz5OhyhXMRls0jrBra5OcVujKFCHdI-hKxtnwbO-v-lDKdPmSUD_h33w=w60-h60-l90-rj",
+                  "width": 60,
+                  "height": 60
+                },
+                {
+                  "url": "https://yt3.googleusercontent.com/XvvdvvJF54vqL_1FSspuGguIKMMz5OhyhXMRls0jrBra5OcVujKFCHdI-hKxtnwbO-v-lDKdPmSUD_h33w=w120-h120-l90-rj",
+                  "width": 120,
+                  "height": 120
+                }
+              ]
+            }
+          }
+        },
+        "flexColumns": [
+          {
+            "musicResponsiveListItemFlexColumnRenderer": {
+              "text": {
+                "runs": [
+                  {
+                    "text": "Sitaare (From \"Ikkis\")",
+                    "navigationEndpoint": {
+                      "watchEndpoint": {
+                        "videoId": "uT_HXrrmHX8",
+                        "watchEndpointMusicSupportedConfigs": {
+                          "watchEndpointMusicConfig": {
+                            "musicVideoType": "MUSIC_VIDEO_TYPE_ATV"
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "musicResponsiveListItemFlexColumnRenderer": {
+              "text": {
+                "runs": [
+                  {
+                    "text": "Arijit Singh",
+                    "navigationEndpoint": {
+                      "browseEndpoint": {
+                        "browseId": "UCDxKh1gFWeYsqePvgVzmPoQ"
+                      }
+                    }
+                  },
+                  {
+                    "text": ", "
+                  },
+                  {
+                    "text": "White Noise Collectives",
+                    "navigationEndpoint": {
+                      "browseEndpoint": {
+                        "browseId": "UCxyvnjniGFuA5hei6GbnZ7Q"
+                      }
+                    }
+                  },
+                  {
+                    "text": " & "
+                  },
+                  {
+                    "text": "Amitabh Bhattacharya",
+                    "navigationEndpoint": {
+                      "browseEndpoint": {
+                        "browseId": "UCRQmZ4lsrzXAyvKRV1DSMYA"
+                      }
+                    }
+                  },
+                  {
+                    "text": " • "
+                  },
+                  {
+                    "text": "Sitaare (From \"Ikkis\")",
+                    "navigationEndpoint": {
+                      "browseEndpoint": {
+                        "browseId": "MPREb_q5MnrtopfbF"
+                      }
+                    }
+                  },
+                  {
+                    "text": " • "
+                  },
+                  {
+                    "text": "4:03"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "musicResponsiveListItemFlexColumnRenderer": {
+              "text": {
+                "runs": [
+                  {
+                    "text": "405M plays"
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "playlistItemData": {
+          "videoId": "uT_HXrrmHX8"
+        },
+        "flexColumnDisplayStyle": "MUSIC_RESPONSIVE_LIST_ITEM_FLEX_COLUMN_DISPLAY_STYLE_TWO_LINE_STACK",
+        "itemHeight": "MUSIC_RESPONSIVE_LIST_ITEM_HEIGHT_TALL"
+      }
+    }
+  ]
+}

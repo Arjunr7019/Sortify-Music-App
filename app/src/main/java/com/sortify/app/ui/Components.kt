@@ -139,7 +139,7 @@ fun SongRow(song: Song, vm: SortifyViewModel, songs: List<Song>, modifier: Modif
             Text(song.title, style = MaterialTheme.typography.titleMedium, color = foreground, maxLines = 1, overflow = TextOverflow.Ellipsis)
             Row(verticalAlignment = Alignment.CenterVertically) {
                 if (vm.isDownloaded(song)) Icon(Icons.Rounded.CheckCircle, "Downloaded", Modifier.padding(end = 4.dp).size(13.dp), tint = if (active) foreground else MaterialTheme.colorScheme.primary)
-                Text(song.artist, style = MaterialTheme.typography.bodyMedium, color = if (active) foreground else MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(song.artist + if (song.provider == com.sortify.app.data.MusicProvider.YouTubeMusic) " · YouTube Music" else "", style = MaterialTheme.typography.bodyMedium, color = if (active) foreground else MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
         }
         if (active && vm.playing) Equalizer(foreground)

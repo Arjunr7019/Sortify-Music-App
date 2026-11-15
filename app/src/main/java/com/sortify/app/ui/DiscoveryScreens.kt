@@ -34,6 +34,7 @@ import com.sortify.app.Screen
 import com.sortify.app.SortifyViewModel
 import com.sortify.app.data.Playlist
 import com.sortify.app.data.Song
+import com.sortify.app.data.MusicProvider
 import java.time.LocalTime
 
 fun dailyMixes(songs: List<Song>): List<Playlist> = listOf(
@@ -127,6 +128,13 @@ fun HomeScreen(vm: SortifyViewModel) {
             if (vm.homeError != null) Box(Modifier.padding(top = 12.dp)) { ErrorNotice(vm.homeError!!, vm::refreshHome) }
             if (vm.refreshing) LinearProgressIndicator(Modifier.fillMaxWidth().padding(top = 12.dp), color = MaterialTheme.colorScheme.primary, trackColor = MaterialTheme.colorScheme.surfaceVariant)
         }
+        if (filter != "Playlists") item {
+            SectionTitle("Trending on YouTube Music")
+            if (vm.youtubeTrending.isNotEmpty()) SongCarousel(vm.youtubeTrending, vm)
+            if (vm.youtubeHomeLoading && vm.youtubeTrending.isEmpty()) LinearProgressIndicator(Modifier.fillMaxWidth().padding(vertical = 16.dp))
+            vm.youtubeTrendingError?.let { ErrorNotice(it, vm::refreshYouTubeHome) }
+        }
+        if (filter != "Music") item { YouTubePlaylistSection(vm) }
         if (filter != "Music") item {
             SectionTitle("Made for you", "See all", { vm.openPlaylist(Playlist("discover", "Made for you", vm.seed, "A selection to start exploring", false)) })
             LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -147,10 +155,10 @@ fun HomeScreen(vm: SortifyViewModel) {
             SongCarousel(vm.seed, vm)
         }
         if (filter != "Playlists") item {
-            SectionTitle("Artists to explore", "See all", { vm.switchTab(Screen.Search); vm.search("popular artists", "artists", true) })
+            SectionTitle("Artists to explore", "See all", { vm.switchTab(Screen.Search); vm.selectSearchProvider(MusicProvider.JioSaavn); vm.search("popular artists", "artists", true) })
             LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 items(vm.seed.distinctBy { it.artist }.take(8)) { song ->
-                    Column(Modifier.width(90.dp).clickable { vm.switchTab(Screen.Search); vm.search(song.artist.substringBefore(","), "artists", true) }, horizontalAlignment = Alignment.CenterHorizontally) {
+                    Column(Modifier.width(90.dp).clickable { vm.switchTab(Screen.Search); vm.selectSearchProvider(MusicProvider.JioSaavn); vm.search(song.artist.substringBefore(","), "artists", true) }, horizontalAlignment = Alignment.CenterHorizontally) {
                         Artwork(song.art(), Modifier.size(90.dp), circle = true)
                         Text(song.artist.substringBefore(","), Modifier.padding(top = 9.dp), style = MaterialTheme.typography.labelMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
@@ -182,6 +190,30 @@ fun HomeScreen(vm: SortifyViewModel) {
 }
 
 @Composable
+private fun YouTubePlaylistSection(vm: SortifyViewModel) {
+    var chosenLanguage by remember { mutableStateOf(vm.languages.firstOrNull().orEmpty()) }
+    val language = chosenLanguage.takeIf { it in vm.languages } ?: vm.languages.firstOrNull().orEmpty()
+    SectionTitle("YouTube Music playlists")
+    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(bottom = 12.dp)) {
+        items(vm.languages.toList(), key = { it }) { name ->
+            CategoryChip(name == language, { chosenLanguage = name }, label = { Text(name) })
+        }
+    }
+    val playlists = vm.youtubePlaylists[language].orEmpty()
+    if (playlists.isNotEmpty()) LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+        items(playlists, key = { it.id }) { item ->
+            Column(Modifier.width(148.dp).clickable { vm.openCatalog(item) }) {
+                Artwork(item.image, Modifier.size(148.dp))
+                Text(item.title, Modifier.padding(top = 9.dp), style = MaterialTheme.typography.titleSmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                Text("$language · YouTube Music", Modifier.padding(top = 3.dp), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        }
+    }
+    if (vm.youtubeHomeLoading && playlists.isEmpty()) LinearProgressIndicator(Modifier.fillMaxWidth().padding(vertical = 16.dp))
+    else if (language in vm.youtubePlaylistErrors) ErrorNotice("Couldn’t load $language playlists from YouTube Music.", vm::refreshYouTubeHome)
+}
+
+@Composable
 fun SongCarousel(songs: List<Song>, vm: SortifyViewModel) {
     LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
         items(songs) { song ->
@@ -203,6 +235,12 @@ fun SearchScreen(vm: SortifyViewModel) {
             ActionIcon(Icons.Rounded.Settings, "Settings") { vm.open(Screen.Settings) }
         }
         OutlinedTextField(vm.query, { vm.search(it) }, Modifier.fillMaxWidth(), placeholder = { Text("Songs, artists, albums…") }, leadingIcon = { Icon(Icons.Rounded.Search, null) }, trailingIcon = { if (vm.query.isNotEmpty()) ActionIcon(Icons.Rounded.Close, "Clear search") { vm.search("") } }, singleLine = true, shape = RoundedCornerShape(14.dp), keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search), keyboardActions = KeyboardActions(onSearch = { focus.clearFocus(); vm.search(immediate = true) }))
+        Row(Modifier.fillMaxWidth().padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            MusicProvider.entries.forEach { provider ->
+                CategoryChip(vm.searchProvider == provider, { vm.selectSearchProvider(provider); focus.clearFocus() },
+                    label = { Text(provider.label, maxLines = 2) }, modifier = Modifier.weight(1f))
+            }
+        }
         if (vm.query.isNotBlank()) {
             LazyRow(Modifier.padding(top = 12.dp, bottom = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(listOf("songs", "artists", "albums", "playlists")) { kind -> CategoryChip(vm.searchKind == kind, { vm.search(kind = kind, immediate = true); focus.clearFocus() }, label = { Text(kind.replaceFirstChar(Char::uppercase)) }) }
@@ -237,9 +275,10 @@ fun SearchScreen(vm: SortifyViewModel) {
                     }
                 }
             }
-            if (vm.recent.isNotEmpty()) {
+            val recent = vm.recent.filter { it.provider == vm.searchProvider }
+            if (recent.isNotEmpty()) {
                 item { SectionTitle("From your last session") }
-                items(vm.recent.take(4)) { SongRow(it, vm, vm.recent, Modifier.padding(bottom = 10.dp)) }
+                items(recent.take(4)) { SongRow(it, vm, recent, Modifier.padding(bottom = 10.dp)) }
             }
         }
     }

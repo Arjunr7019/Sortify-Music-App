@@ -36,6 +36,7 @@ both branches, publishing tags, and signing/update limitations.
 - **Welcome and language setup:** no sign-in; choose one or more music languages.
 - **Home:** mixes, language-based discovery, artist search, your playlists, and recent listening.
 - **Search:** debounced song, artist, album, and playlist search; browse moods; drill into catalog results; empty, loading, and retry states.
+- **YouTube Music:** choose JioSaavn or YouTube Music below Search; browse YouTube trending and playlists for your selected languages on Home. YouTube tracks work with the existing player and local library. See [integration, dependencies, and verification](docs/YOUTUBE_MUSIC.md).
 - **Library:** liked songs, personal playlists, downloads, and recent songs; filter and sort playlists.
 - **Create:** name a playlist and optionally start with selected tracks. Cover artwork follows its contents.
 - **Playlist details:** play, shuffle, save catalog mixes to your library, download, share, rename, delete, and remove tracks.

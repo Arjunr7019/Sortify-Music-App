@@ -6,6 +6,14 @@ import kotlin.math.abs
 
 data class AudioSource(val quality: String, val url: String)
 
+enum class MusicProvider(val label: String) {
+    JioSaavn("JioSaavn"), YouTubeMusic("YouTube Music");
+
+    companion object {
+        fun fromValue(value: String) = entries.find { it.name == value } ?: JioSaavn
+    }
+}
+
 data class Song(
     val id: String,
     val title: String,
@@ -17,6 +25,7 @@ data class Song(
     val sources: List<AudioSource> = emptyList(),
     val localPath: String = "",
     val bundledArt: String = "",
+    val provider: MusicProvider = MusicProvider.JioSaavn,
 ) {
     fun audioUrl(quality: String): String? = if (localPath.isNotBlank()) localPath else
         sources.filter { it.url.startsWith("https://") }.minByOrNull {
@@ -27,6 +36,7 @@ data class Song(
         put("id", id); put("name", title); put("primaryArtists", artist)
         put("album", JSONObject().put("name", album)); put("duration", duration)
         put("language", language); put("localPath", localPath); put("bundledArt", bundledArt)
+        put("provider", provider.name)
         put("image", JSONArray().put(JSONObject().put("url", image)))
         put("downloadUrl", JSONArray(sources.map { JSONObject().put("quality", it.quality).put("url", it.url) }))
     }
@@ -45,6 +55,7 @@ data class Song(
                 duration = j.optLong("duration"), language = j.optString("language"),
                 sources = (0 until urls.length()).mapNotNull { index -> urls.optJSONObject(index)?.let { AudioSource(it.optString("quality"), it.optString("url")) } },
                 localPath = j.optString("localPath"), bundledArt = j.optString("bundledArt"),
+                provider = MusicProvider.fromValue(j.optString("provider")),
             )
         }
     }
@@ -60,4 +71,4 @@ data class Playlist(val id: String, val name: String, val songs: List<Song> = em
     fun json() = JSONObject().put("id", id).put("name", name).put("songs", songs.json())
 }
 
-data class CatalogItem(val id: String, val title: String, val subtitle: String, val image: String, val kind: String)
+data class CatalogItem(val id: String, val title: String, val subtitle: String, val image: String, val kind: String, val provider: MusicProvider = MusicProvider.JioSaavn)
