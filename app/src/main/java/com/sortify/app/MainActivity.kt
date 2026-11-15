@@ -64,6 +64,7 @@ private val destinations = listOf(
 )
 
 @Composable
+@OptIn(ExperimentalLayoutApi::class)
 fun SortifyApp(vm: SortifyViewModel) {
     val snackbar = remember { SnackbarHostState() }
     LaunchedEffect(vm) { vm.messages.collect { snackbar.showSnackbar(it, duration = SnackbarDuration.Short) } }
@@ -74,6 +75,7 @@ fun SortifyApp(vm: SortifyViewModel) {
                 val expanded = maxWidth >= 700.dp
                 val playerFull = vm.screen == Screen.Player || vm.screen == Screen.Queue
                 val browseScreen = if (playerFull) vm.playerOrigin else vm.screen
+                val searchKeyboardOpen = vm.screen == Screen.Search && WindowInsets.isImeVisible
                 val heightPx = with(LocalDensity.current) { maxHeight.toPx() }
                 val motion = remember { PlayerMotionState(playerFull) }
                 val miniGesture = Modifier.playerDrag(motion, false, heightPx) { open -> if (open) vm.open(Screen.Player) }
@@ -86,7 +88,7 @@ fun SortifyApp(vm: SortifyViewModel) {
                         containerColor = Color.Transparent,
                         contentWindowInsets = WindowInsets(0),
                         bottomBar = {
-                            if (vm.stage == 2) Column {
+                            if (vm.stage == 2 && !searchKeyboardOpen) Column {
                                 MiniPlayer(vm, miniGesture)
                                 if (!expanded) NavigationBar(containerColor = Color.Transparent, tonalElevation = 0.dp, windowInsets = WindowInsets(0), modifier = Modifier.heightIn(min = 72.dp)) {
                                     destinations.forEach { (screen, label, icon) -> NavigationBarItem(vm.tab == screen, { vm.switchTab(screen) }, { Icon(icon, label) }, label = { Text(label, style = MaterialTheme.typography.labelMedium) }, colors = NavigationBarItemDefaults.colors(selectedIconColor = MaterialTheme.colorScheme.onBackground, selectedTextColor = MaterialTheme.colorScheme.onBackground, indicatorColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = .4f))) }
@@ -119,7 +121,7 @@ fun SortifyApp(vm: SortifyViewModel) {
                 PlayerOverlay(vm, motion, heightPx)
                 SnackbarHost(snackbar, Modifier.align(Alignment.BottomCenter).padding(
                     start = 12.dp, end = 12.dp,
-                    bottom = if (playerFull) 16.dp else if (expanded) 84.dp else if (vm.current != null) 164.dp else 88.dp,
+                    bottom = if (playerFull || searchKeyboardOpen) 16.dp else if (expanded) 84.dp else if (vm.current != null) 164.dp else 88.dp,
                 ))
             }
         }

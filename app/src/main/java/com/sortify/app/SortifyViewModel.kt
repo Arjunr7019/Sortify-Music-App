@@ -27,6 +27,9 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import java.util.UUID
@@ -86,6 +89,8 @@ class SortifyViewModel(app: Application) : AndroidViewModel(app) {
     var addToPlaylist by mutableStateOf<Song?>(null)
     var songMenu by mutableStateOf<Song?>(null)
     var sleepMinutes by mutableStateOf(0); private set
+    var dataTransfer by mutableStateOf<String?>(null); private set
+    private var applyingImport = false
     private var sleepJob: Job? = null
     private val _messages = MutableSharedFlow<String>(extraBufferCapacity = 10)
     val messages = _messages.asSharedFlow()
@@ -119,6 +124,7 @@ class SortifyViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private fun syncPlayer() {
+        if (applyingImport) return
         val player = controller ?: return
         if (queue.isEmpty() && player.mediaItemCount > 0) {
             val known = (downloads + recent + favorites + seed).associateBy { it.id }
@@ -165,6 +171,61 @@ class SortifyViewModel(app: Application) : AndroidViewModel(app) {
     fun updateTheme(value: String) { theme = value; repo.theme = value }
     fun updateQuality(value: String) { quality = value; repo.quality = value; message("Streaming quality set to $value. Applies to the next track.") }
     fun updateLanguages(value: Set<String>) { if (value.isNotEmpty()) { languages = value; repo.languages = value } }
+
+    fun exportData(uri: Uri) {
+        if (dataTransfer != null) return
+        if (downloading.isNotEmpty()) { message("Wait for your downloads to finish, then export again."); return }
+        dataTransfer = "Exporting all data…"
+        viewModelScope.launch {
+            try {
+                repo.exportData(uri)
+                message("Backup exported, including downloaded audio")
+            } catch (error: CancellationException) { throw error }
+            catch (error: Exception) { message(error.message ?: "Could not export. Check free storage and try another location.") }
+            finally { dataTransfer = null }
+        }
+    }
+
+    fun importData(uri: Uri) {
+        if (dataTransfer != null) return
+        if (downloading.isNotEmpty()) { message("Wait for your downloads to finish, then import again."); return }
+        dataTransfer = "Importing all data…"
+        viewModelScope.launch {
+            var prepared: MusicRepository.PreparedImport? = null
+            var applied = false
+            try {
+                val ready = withContext(Dispatchers.IO) { repo.prepareImport(uri).also { prepared = it } }
+                // Complete the transaction and UI refresh together, even if the activity closes.
+                withContext(NonCancellable) {
+                    applyingImport = true
+                    val previousDownloads = downloads
+                    withContext(Dispatchers.IO) { repo.applyImport(ready) }
+                    applied = true
+                    controller?.stop()
+                    controller?.clearMediaItems()
+                    queue = emptyList(); current = null; position = 0; duration = 0
+                    playbackError = null; setSleepTimer(0)
+                    favorites = repo.loadSongs("favorites"); recent = repo.loadSongs("recent")
+                    playlists = repo.loadPlaylists(); downloads = repo.loadSongs("downloads")
+                    theme = repo.theme; quality = repo.quality; languages = repo.languages
+                    searchProvider = repo.searchProvider
+                    stage = if (repo.onboarded) 2 else 0
+                    selectedPlaylist = null; detailItem = null; addToPlaylist = null; songMenu = null
+                    applyingImport = false
+                    search(immediate = true)
+                    if (stage == 2) refreshHome()
+                    message("All data imported")
+                    repo.removeReplacedAudio(previousDownloads)
+                }
+            } catch (error: CancellationException) { throw error }
+            catch (error: Exception) { message("Could not import backup. ${error.message ?: "Choose a valid Sortify backup and retry."}") }
+            finally {
+                applyingImport = false
+                if (!applied) prepared?.let { withContext(NonCancellable + Dispatchers.IO) { it.discard() } }
+                dataTransfer = null
+            }
+        }
+    }
 
     fun refreshHome() {
         homeJob?.cancel()
@@ -302,6 +363,7 @@ class SortifyViewModel(app: Application) : AndroidViewModel(app) {
     fun isDownloaded(song: Song) = downloads.any { it.id == song.id }
 
     fun download(song: Song) {
+        if (dataTransfer != null) { message("Wait for the backup operation to finish."); return }
         if (isDownloaded(song)) { message("Already available offline"); return }
         if (song.id in downloading) return
         viewModelScope.launch {

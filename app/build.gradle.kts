@@ -11,8 +11,8 @@ android {
         applicationId = "com.sortify.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 3
-        versionName = "2.0.2"
+        versionCode = 4
+        versionName = "2.0.3"
         buildConfigField("String", "MUSIC_API_BASE", "\"https://saavn.bycomsolutions.com/api\"")
         buildConfigField("String", "YOUTUBE_MUSIC_API_BASE", "\"https://music.youtube.com/youtubei/v1\"")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

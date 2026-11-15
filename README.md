@@ -42,12 +42,14 @@ both branches, publishing tags, and signing/update limitations.
 - **Playlist details:** play, shuffle, save catalog mixes to your library, download, share, rename, delete, and remove tracks.
 - **Player:** tap or swipe up on the mini-player to expand; swipe down on the full player header or artwork to collapse. The player follows your finger and settles smoothly; short drags snap back. Browsing stays mounted to preserve its scroll position. Real audio streaming, seek, previous/next, shuffle, repeat all/one, favourites, download, sleep timer, and queue remain available.
 - **Queue:** play a queued track, move tracks earlier, and remove tracks.
-- **Settings:** dark/light/system appearance, 96/160/320 kbps quality, languages, sleep timer, download management, and app information.
+- **Settings:** dark/light/system appearance, 96/160/320 kbps quality, languages, sleep timer, download management, full data import/export, and app information.
 - Persistent mini-player, Android system Back, edge-to-edge insets, and navigation rail on wider layouts.
 
 `MediaSessionService` hosts Media3 ExoPlayer separately from the activity for background playback, audio focus, headphone unplug handling, and system media controls. The app requests notification permission when playback first starts.
 
 Likes, playlists, language preferences, quality, appearance, recent listening, and download records persist in app-private storage. Audio downloads are written to app-private files using temporary files and atomic rename; already-downloaded audio is preferred for playback. Sharing sends the actual song or playlist text through the Android sharesheet.
+
+In **Settings → Backup & restore**, **Export all data** saves a ZIP containing playlists, liked songs, recent history, preferences (including music provider), and downloaded audio. **Import all data** opens a Sortify ZIP backup and asks before replacing the current library and preferences. Audio is restored to this device's private storage; playback and the sleep timer stop after a successful import. Invalid or incomplete backups leave the current data intact. Wait for active downloads to finish before exporting or importing, and keep the app open during the operation.
 
 ## Music service
 

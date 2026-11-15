@@ -1,6 +1,7 @@
 package com.sortify.app.data
 
 import android.content.Context
+import android.net.Uri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
@@ -9,6 +10,7 @@ import java.io.File
 import java.net.HttpURLConnection
 import java.net.URI
 import java.net.URLEncoder
+import java.util.UUID
 import com.sortify.app.BuildConfig
 
 class MusicRepository(private val context: Context) {
@@ -41,6 +43,76 @@ class MusicRepository(private val context: Context) {
         (0 until a.length()).map { a.getJSONObject(it).let { p -> Playlist(p.getString("id"), p.getString("name"), p.getJSONArray("songs").songs()) } }
     }.getOrDefault(emptyList())
     fun savePlaylists(playlists: List<Playlist>) { prefs.edit().putString("playlists", JSONArray(playlists.map(Playlist::json)).toString()).apply() }
+
+    suspend fun exportData(uri: Uri) = withContext(Dispatchers.IO) {
+        val snapshot = backupSnapshot()
+        val output = context.contentResolver.openOutputStream(uri, "wt")
+            ?: error("Could not open this file. Choose another location and retry.")
+        output.use { DataBackup.write(it, snapshot, File(context.filesDir, "downloads")) }
+    }
+
+    class PreparedImport internal constructor(internal val data: JSONObject, internal val directory: File) {
+        fun discard() { directory.deleteRecursively() }
+    }
+
+    fun prepareImport(uri: Uri): PreparedImport {
+        val root = File(context.filesDir, "downloads").apply { mkdirs() }
+        val staging = File(root, "restore-${UUID.randomUUID()}")
+        check(staging.mkdir()) { "Could not prepare backup storage. Check free space and retry." }
+        try {
+            val data = context.contentResolver.openInputStream(uri)?.use { DataBackup.read(it, staging) }
+                ?: error("Could not open this backup. Choose the file again.")
+            DataBackup.relocateAudio(data, staging)
+            return PreparedImport(data, staging)
+        } catch (error: Exception) {
+            staging.deleteRecursively()
+            throw error
+        }
+    }
+
+    // One preferences transaction publishes the fully validated library and audio paths together.
+    fun applyImport(prepared: PreparedImport) {
+        val previous = backupSnapshot()
+        if (!writeSnapshot(prepared.data)) {
+            writeSnapshot(previous)
+            error("Could not save the imported data. Check free storage and retry.")
+        }
+    }
+
+    suspend fun removeReplacedAudio(previous: List<Song>) = withContext(Dispatchers.IO) {
+        previous.forEach { runCatching { removeDownload(it) } }
+    }
+
+    private fun backupSnapshot() = JSONObject().apply {
+        put("settings", JSONObject().put("onboarded", onboarded).put("languages", JSONArray(languages.toList()))
+            .put("quality", quality).put("theme", theme).put("searchProvider", searchProvider.name))
+        fun normalizedSongs(songs: JSONArray) = JSONArray((0 until songs.length()).map {
+            Song.fromJson(songs.getJSONObject(it)).json()
+        })
+        listOf("favorites", "recent", "downloads").forEach { key ->
+            put(key, normalizedSongs(JSONArray(prefs.getString(key, "[]"))))
+        }
+        val playlists = JSONArray(prefs.getString("playlists", "[]"))
+        for (index in 0 until playlists.length()) {
+            val playlist = playlists.getJSONObject(index)
+            playlist.put("songs", normalizedSongs(playlist.getJSONArray("songs")))
+        }
+        put("playlists", playlists)
+    }
+
+    private fun writeSnapshot(data: JSONObject): Boolean {
+        val settings = data.getJSONObject("settings")
+        val languages = settings.getJSONArray("languages")
+        return prefs.edit().putBoolean("onboarded", settings.getBoolean("onboarded"))
+            .putStringSet("languages", (0 until languages.length()).map { languages.getString(it) }.toSet())
+            .putString("quality", settings.getString("quality"))
+            .putString("theme", settings.getString("theme"))
+            .putString("searchProvider", settings.getString("searchProvider"))
+            .putString("favorites", data.getJSONArray("favorites").toString())
+            .putString("recent", data.getJSONArray("recent").toString())
+            .putString("downloads", data.getJSONArray("downloads").toString())
+            .putString("playlists", data.getJSONArray("playlists").toString()).commit()
+    }
 
     private suspend fun request(path: String): JSONObject = withContext(Dispatchers.IO) {
         val connection = URI(BuildConfig.MUSIC_API_BASE.trimEnd('/') + path).toURL().openConnection() as HttpURLConnection
@@ -101,7 +173,10 @@ class MusicRepository(private val context: Context) {
         if (song.localPath.isBlank()) return
         val file = File(URI(song.localPath))
         val root = File(context.filesDir, "downloads").canonicalFile
-        if (file.canonicalFile.parentFile == root) file.delete()
+        if (file.canonicalFile.startsWith(root) && file.canonicalFile != root) {
+            file.delete()
+            file.parentFile?.takeIf { it != root && it.list()?.isEmpty() == true }?.delete()
+        }
     }
 
     private fun encode(value: String) = URLEncoder.encode(value, "UTF-8")
