@@ -45,7 +45,15 @@ both branches, publishing tags, and signing/update limitations.
 - **Settings:** dark/light/system appearance, 96/160/320 kbps quality, languages, sleep timer, download management, full data import/export, and app information.
 - Persistent mini-player, Android system Back, edge-to-edge insets, and navigation rail on wider layouts.
 
-`MediaSessionService` hosts Media3 ExoPlayer separately from the activity for background playback, audio focus, headphone unplug handling, and system media controls. The app requests notification permission when playback first starts.
+`MediaLibraryService` hosts Media3 ExoPlayer separately from the activity for background playback, audio focus, headphone unplug handling, system media controls, and Android Auto browsing. The app requests notification permission when playback first starts.
+
+## Android Auto
+
+Connect your phone to Android Auto and open **Sortify** in the car's app launcher. Browse **Home**, **Liked songs**, **Downloads**, and **Playlists**. Home starts with recent listening and then the bundled catalog. Selecting a song queues the rest of its collection; play/pause, previous/next, seek, shuffle, and repeat use the same player as the phone. Listening history is saved even when the phone UI is closed.
+
+Voice search checks saved music first, then the music provider selected in the phone's Search screen. Downloaded audio takes priority; other tracks need a connection. The car can start the playback service without opening the phone app. See [Android Auto implementation and testing](docs/ANDROID_AUTO.md).
+
+For sideloaded APKs, enable Android Auto developer mode and **Unknown sources** in its developer settings if Sortify is missing from the launcher. See [Google's testing instructions](https://developer.android.com/training/cars/testing#unknown-sources).
 
 Likes, playlists, language preferences, quality, appearance, recent listening, and download records persist in app-private storage. Audio downloads are written to app-private files using temporary files and atomic rename; already-downloaded audio is preferred for playback. Sharing sends the actual song or playlist text through the Android sharesheet.
 

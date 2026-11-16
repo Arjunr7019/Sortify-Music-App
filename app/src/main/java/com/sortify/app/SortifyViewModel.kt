@@ -11,13 +11,14 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
-import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.sortify.app.data.*
 import com.sortify.app.playback.PlaybackService
+import com.sortify.app.playback.toMediaItem
+import com.sortify.app.playback.toSong
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -126,12 +127,9 @@ class SortifyViewModel(app: Application) : AndroidViewModel(app) {
     private fun syncPlayer() {
         if (applyingImport) return
         val player = controller ?: return
-        if (queue.isEmpty() && player.mediaItemCount > 0) {
-            val known = (downloads + recent + favorites + seed).associateBy { it.id }
-            queue = (0 until player.mediaItemCount).map { index ->
-                val item = player.getMediaItemAt(index)
-                known[item.mediaId] ?: Song(item.mediaId, item.mediaMetadata.title?.toString().orEmpty(), item.mediaMetadata.artist?.toString().orEmpty(), image = item.mediaMetadata.artworkUri?.toString().orEmpty(), sources = item.localConfiguration?.uri?.toString()?.let { listOf(AudioSource(quality, it)) }.orEmpty(), provider = if (item.mediaId.startsWith("yt:")) MusicProvider.YouTubeMusic else MusicProvider.JioSaavn)
-            }
+        val items = (0 until player.mediaItemCount).map(player::getMediaItemAt)
+        if (queue.map { it.id } != items.map { it.mediaId }) {
+            queue = items.map { it.toSong(quality) }
         }
         playing = player.isPlaying
         buffering = player.playbackState == Player.STATE_BUFFERING
@@ -143,9 +141,9 @@ class SortifyViewModel(app: Application) : AndroidViewModel(app) {
         val song = queue.find { it.id == id }
         if (song != null && current?.id != song.id) {
             current = song
-            recent = (listOf(song) + recent.filterNot { it.id == song.id }).take(12)
-            repo.saveSongs("recent", recent)
+            recent = repo.loadSongs("recent")
         }
+        if (song == null) current = null
     }
 
     fun startWelcome() { stage = 1 }
@@ -381,15 +379,19 @@ class SortifyViewModel(app: Application) : AndroidViewModel(app) {
     }
     fun clearDownloads() { downloads.forEach(repo::removeDownload); downloads = emptyList(); repo.saveSongs("downloads", downloads); message("Downloads removed") }
 
-    private fun Song.mediaItem(): MediaItem? {
-        val local = downloads.find { it.id == id }?.takeIf { java.io.File(java.net.URI(it.localPath)).exists() }
-        val url = local?.audioUrl(quality) ?: if (provider == MusicProvider.YouTubeMusic)
-            "https://music.youtube.com/watch?v=${id.removePrefix("yt:")}&sortify_quality=$quality"
-        else copy(localPath = "").audioUrl(quality) ?: return null
-        return MediaItem.Builder().setMediaId(id).setUri(url).setMediaMetadata(
-            MediaMetadata.Builder().setTitle(title).setArtist(artist).setAlbumTitle(album)
-                .setArtworkUri(image.takeIf { it.startsWith("https://") }?.let(Uri::parse)).build()
-        ).build()
+    private fun Song.mediaItem(): MediaItem? = toMediaItem(quality, downloads)
+
+    fun playFromSearch(query: String) {
+        controllerFuture.addListener({
+            runCatching {
+                controllerFuture.get().apply {
+                    setMediaItem(MediaItem.Builder().setMediaId("sortify:voice-search").setRequestMetadata(
+                        MediaItem.RequestMetadata.Builder().setSearchQuery(query).build()).build())
+                    prepare()
+                    play()
+                }
+            }.onFailure { message("Voice playback could not start. Try another search.") }
+        }, ContextCompat.getMainExecutor(getApplication()))
     }
 
     fun play(song: Song, songs: List<Song> = listOf(song), expand: Boolean = false) {

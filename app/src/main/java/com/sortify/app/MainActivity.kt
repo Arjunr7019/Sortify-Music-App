@@ -1,6 +1,9 @@
 package com.sortify.app
 
 import android.Manifest
+import android.app.SearchManager
+import android.content.Intent
+import android.provider.MediaStore
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -25,6 +28,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.core.view.WindowCompat
 import com.sortify.app.ui.*
 
@@ -33,6 +37,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        if (savedInstanceState == null) handleVoiceSearch(intent)
         setContent {
             val vm: SortifyViewModel = viewModel()
             SortifyTheme(vm.theme) {
@@ -52,6 +57,18 @@ class MainActivity : ComponentActivity() {
                 }
                 SortifyApp(vm)
             }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleVoiceSearch(intent)
+    }
+
+    private fun handleVoiceSearch(intent: Intent) {
+        if (intent.action == MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH) {
+            ViewModelProvider(this)[SortifyViewModel::class.java].playFromSearch(intent.getStringExtra(SearchManager.QUERY).orEmpty())
         }
     }
 }
