@@ -126,12 +126,11 @@ fun HomeScreen(vm: SortifyViewModel) {
                 }
             }
             if (vm.homeError != null) Box(Modifier.padding(top = 12.dp)) { ErrorNotice(vm.homeError!!, vm::refreshHome) }
-            if (vm.refreshing) LinearProgressIndicator(Modifier.fillMaxWidth().padding(top = 12.dp), color = MaterialTheme.colorScheme.primary, trackColor = MaterialTheme.colorScheme.surfaceVariant)
         }
         if (filter != "Playlists") item {
             SectionTitle("Trending on YouTube Music")
             if (vm.youtubeTrending.isNotEmpty()) SongCarousel(vm.youtubeTrending, vm)
-            if (vm.youtubeHomeLoading && vm.youtubeTrending.isEmpty()) LinearProgressIndicator(Modifier.fillMaxWidth().padding(vertical = 16.dp))
+            if (vm.youtubeHomeLoading && vm.youtubeTrending.isEmpty() && vm.youtubeTrendingError == null) SkeletonCarousel("Trending on YouTube Music")
             vm.youtubeTrendingError?.let { ErrorNotice(it, vm::refreshYouTubeHome) }
         }
         if (filter != "Music") item { YouTubePlaylistSection(vm) }
@@ -170,7 +169,12 @@ fun HomeScreen(vm: SortifyViewModel) {
             SongCarousel(vm.recent, vm)
         }
         if (filter != "Playlists") {
-            if (vm.trending.isEmpty()) item {
+            if (vm.refreshing && vm.trending.isEmpty()) {
+                items(vm.languages.toList(), key = { "loading-trending-$it" }) { language ->
+                    SectionTitle("Trending in $language")
+                    SkeletonCarousel("Trending in $language")
+                }
+            } else if (vm.trending.isEmpty()) item {
                 SectionTitle("Start exploring")
                 SongCarousel(vm.seed, vm)
             }
@@ -209,7 +213,7 @@ private fun YouTubePlaylistSection(vm: SortifyViewModel) {
             }
         }
     }
-    if (vm.youtubeHomeLoading && playlists.isEmpty()) LinearProgressIndicator(Modifier.fillMaxWidth().padding(vertical = 16.dp))
+    if (vm.youtubeHomeLoading && playlists.isEmpty() && language !in vm.youtubePlaylistErrors) SkeletonCarousel("$language YouTube Music playlists", playlist = true)
     else if (language in vm.youtubePlaylistErrors) ErrorNotice("Couldn’t load $language playlists from YouTube Music.", vm::refreshYouTubeHome)
 }
 
@@ -245,7 +249,7 @@ fun SearchScreen(vm: SortifyViewModel) {
             LazyRow(Modifier.padding(top = 12.dp, bottom = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(listOf("songs", "artists", "albums", "playlists")) { kind -> CategoryChip(vm.searchKind == kind, { vm.search(kind = kind, immediate = true); focus.clearFocus() }, label = { Text(kind.replaceFirstChar(Char::uppercase)) }) }
             }
-            if (vm.searching) Box(Modifier.fillMaxWidth().padding(40.dp), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+            if (vm.searching) SkeletonSearchResults(vm.searchKind, Modifier.weight(1f))
             else if (vm.searchError != null) ErrorNotice(vm.searchError!!) { vm.search(immediate = true) }
             else if (vm.searchResults.isEmpty() && vm.catalogResults.isEmpty()) EmptyState(Icons.Rounded.SearchOff, "No matches yet", "Try another title, artist, or spelling.")
             else LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp), contentPadding = PaddingValues(bottom = 24.dp)) {

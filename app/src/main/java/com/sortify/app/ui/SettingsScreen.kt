@@ -88,7 +88,12 @@ fun SettingsScreen(vm: SortifyViewModel) {
             title = { Text(status) },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                    LinearProgressIndicator(Modifier.fillMaxWidth())
+                    SkeletonLoading(status, Modifier.fillMaxWidth()) {
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            SkeletonTextLine(Modifier.fillMaxWidth())
+                            SkeletonTextLine(Modifier.fillMaxWidth(), fraction = .65f)
+                        }
+                    }
                     Text("Downloaded audio can make this take a while. Keep Sortify open until it finishes.")
                 }
             },

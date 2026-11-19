@@ -50,6 +50,16 @@ Built and installed the updated debug APK on 14 November 2026. `scripts/verify_p
 
 The build, unit tests, Android lint, and APK signature verification passed. Lint still reports 19 warnings and five hints. An initial build encountered a Windows lock on generated `R.jar`; a retry using a fresh Gradle daemon completed successfully.
 
+## Skeleton loading update (19 November 2026)
+
+Replaced indeterminate loading bars and spinners with shared Compose skeletons for discovery shelves, song and catalog searches, playlist details, artwork, player buffering controls, and backup/restore feedback. The mini-player retains its determinate playback-position strip. Existing results stay visible during background refreshes, and artwork failures still resolve to the music-note fallback.
+
+- `:app:assembleDebug`, `:app:testDebugUnitTest`, and `:app:lintDebug` passed using the cached toolchain. All 30 unit tests passed; lint reported zero errors, 18 warnings, and five hints.
+- Installed the debug APK on the dedicated API 35 emulator. Inspected native Home and Search loading captures with requests held by a temporary local proxy, plus successful artist search and populated artist detail after normal connectivity was restored.
+- Inspected Home skeletons in Dark and Light appearances, at 130% system font scale, and at the 1600 x 2560 / density 240 wide-layout override. Existing bundled mixes and artists remained visible alongside loading remote shelves on the wide layout.
+- Checked accessible loading labels in the Android UI tree. Skeleton blocks are grouped under a loading description; individual placeholder shapes expose no actions. Captures at zero animation duration scale confirmed that loading shapes remain visible.
+- Restored the emulator proxy, animation duration scale, font scale, resolution, density, and app appearance after the checks. Original captures are linked from the [screenshot index](screenshots/README.md).
+
 ## Capture environment
 
 Phone: `Medium_Phone_API_35`, 1080 × 2400 px, density 420. Wide layout: the same emulator with a 1600 × 2560 px / density 240 override; this checks adaptive layout, not physical tablet behavior. Font-size check uses Android’s system `font_scale=1.3`.

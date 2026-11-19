@@ -294,7 +294,7 @@ The image alone owns its crop and clip. Artwork uses a crop fill and a music-not
 
 ### Buttons
 
-Circular green play controls are the strongest action: 60dp by default and 74dp in the full player. Their icon changes between Play and Pause, with a spinner during buffering. The fixed green and deep-green foreground stay paired in both themes.
+Circular green play controls are the strongest action: 60dp by default and 74dp in the full player. Their icon changes between Play and Pause, with a small pulsing skeleton during buffering. The control remains available and exposes its buffering state to accessibility. The fixed green and deep-green foreground stay paired in both themes.
 
 Native filled buttons carry the theme primary. Onboarding and form submit actions span their content width and use observed minimum heights of 54–56dp. Blank playlist names and empty language selections disable submission. Text buttons carry secondary actions such as See all, Retry, and dialog dismissal.
 
@@ -324,13 +324,13 @@ A 54dp artwork thumbnail, weighted title/artist column, and options action sit i
 
 ### Persistent mini-player
 
-A secondary-container surface with a fine outline and 16dp corners holds 48dp art, title, artist, favourite, and play/pause actions. A 2dp progress strip anchors its bottom. Tapping or swiping up on the surface opens the full player; swiping down on the full player header or artwork collapses it. Short, slow drags return to the initial state, directional flings take precedence, and horizontal drags cancel accidental taps. The seek bar and transport controls remain outside the dismissal gesture area; buffering replaces play/pause with a spinner, and liked state changes the heart and its tint.
+A secondary-container surface with a fine outline and 16dp corners holds 48dp art, title, artist, favourite, and play/pause actions. A 2dp progress strip anchors its bottom. Tapping or swiping up on the surface opens the full player; swiping down on the full player header or artwork collapses it. Short, slow drags return to the initial state, directional flings take precedence, and horizontal drags cancel accidental taps. The seek bar and transport controls remain outside the dismissal gesture area; buffering shows a small skeleton inside the play/pause action, and liked state changes the heart and its tint.
 
 ### Dialogs, sheets, and feedback
 
 Quality, appearance, and sleep-timer choices use native radio dialogs. Quality offers 96, 160, and 320kbps with a data/storage explanation. Destructive download and playlist actions use explicit confirmation dialogs. Song actions and add-to-playlist use modal bottom sheets.
 
-Loading uses native linear or circular progress indicators. Shared retry notices pair explanation and Retry. Empty library, downloads, liked songs, and playlist states use an icon disk, a clear title, supporting text, and an appropriate next action. Search separates browse, loading, results, no matches, and service-error states. Snackbars acknowledge actions. These states must remain part of a screen's design rather than assuming only populated success.
+Loading uses theme-aware skeletons from [Skeletons.kt](app/src/main/java/com/sortify/app/ui/Skeletons.kt). Home shelves reserve 148dp artwork and caption space; search uses track or catalog rows with circular artist portraits; playlist details use an artwork block, metadata line, and song rows. Artwork throughout the app shows its own skeleton until decoding finishes, then keeps the music-note fallback for absent or failed images. Loaded content remains visible during background refreshes. Backup and restore use compact text skeletons alongside the operation description. Skeleton groups share a gentle opacity pulse, honor Android's animation duration scale, and expose one loading state rather than individual placeholder shapes to accessibility. The mini-player's determinate playback-position strip remains. Shared retry notices pair explanation and Retry. Empty library, downloads, liked songs, and playlist states use an icon disk, a clear title, supporting text, and an appropriate next action. Search separates browse, loading, results, no matches, and service-error states. Snackbars acknowledge actions. These states must remain part of a screen's design rather than assuming only populated success.
 
 Sources: [MainActivity.kt](app/src/main/java/com/sortify/app/MainActivity.kt), [DiscoveryScreens.kt](app/src/main/java/com/sortify/app/ui/DiscoveryScreens.kt), [LibraryScreens.kt](app/src/main/java/com/sortify/app/ui/LibraryScreens.kt), [PlayerScreens.kt](app/src/main/java/com/sortify/app/ui/PlayerScreens.kt), and [SettingsScreen.kt](app/src/main/java/com/sortify/app/ui/SettingsScreen.kt).
 

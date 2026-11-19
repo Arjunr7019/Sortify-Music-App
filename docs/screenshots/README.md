@@ -27,5 +27,12 @@ Original captures from the Android API 35 emulator. See [verification details](.
 | Offline search error | [search-offline-phone.png](search-offline-phone.png) |
 | Enlarged text | [home-font130-phone.png](home-font130-phone.png) |
 | Wide layout | [home-tablet.png](home-tablet.png) |
+| Skeleton loading: Home | [skeleton-home-phone.png](skeleton-home-phone.png) |
+| Skeleton loading: Search | [skeleton-search-phone.png](skeleton-search-phone.png) |
+| Skeleton loading: light appearance | [skeleton-home-light-phone.png](skeleton-home-light-phone.png) |
+| Skeleton loading: enlarged text | [skeleton-home-font130-phone.png](skeleton-home-font130-phone.png) |
+| Skeleton loading: wide layout | [skeleton-home-tablet.png](skeleton-home-tablet.png) |
 
 These are live app screens with a test library, real catalog metadata, and actual playback state. They are not generated mockups. Original pixels are preserved. The 2.0.1 gesture captures come directly from `adb exec-out screencap -p`; their origin and hashes are recorded in [gesture-provenance.json](gesture-provenance.json). The original [gesture recording](../player-gestures.mp4) shows expansion and collapse in motion.
+
+The skeleton captures were taken on 19 November 2026 with requests deliberately held by a temporary emulator proxy. Animation duration scale was set to zero for deterministic captures and to verify that placeholders remain visible with Remove animations. The proxy, duration scale, font scale, resolution, density, and app appearance were restored after verification.

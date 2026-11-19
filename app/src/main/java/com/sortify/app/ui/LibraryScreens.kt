@@ -118,7 +118,10 @@ fun PlaylistScreen(vm: SortifyViewModel) {
     LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 24.dp)) {
         item {
             Box(Modifier.fillMaxWidth().height(300.dp)) {
-                if (playlist.songs.size >= 3) Row(Modifier.fillMaxSize()) {
+                if (vm.detailLoading && playlist.songs.isEmpty()) SkeletonLoading("Playlist artwork", Modifier.fillMaxSize()) {
+                    SkeletonBlock(Modifier.fillMaxSize(), shape = RoundedCornerShape(0.dp))
+                }
+                else if (playlist.songs.size >= 3) Row(Modifier.fillMaxSize()) {
                     playlist.songs.take(3).forEach { Artwork(it.art(), Modifier.weight(1f).fillMaxHeight()) }
                 } else CoverCollage(playlist.songs, Modifier.fillMaxSize())
                 Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color.Black.copy(alpha = .24f), Color.Transparent, MaterialTheme.colorScheme.background))))
@@ -131,7 +134,10 @@ fun PlaylistScreen(vm: SortifyViewModel) {
                 Text(playlist.description, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Row(Modifier.padding(top = 12.dp), verticalAlignment = Alignment.CenterVertically) {
                     BrandMark(Modifier.height(24.dp))
-                    Text("${if (playlist.personal) "You" else "Sortify"} · ${playlist.songs.size} songs", Modifier.padding(start = 8.dp), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    if (vm.detailLoading && playlist.songs.isEmpty()) SkeletonLoading("Playlist information", Modifier.padding(start = 8.dp).width(120.dp)) {
+                        SkeletonTextLine(Modifier.fillMaxWidth(), style = MaterialTheme.typography.bodySmall)
+                    }
+                    else Text("${if (playlist.personal) "You" else "Sortify"} · ${playlist.songs.size} songs", Modifier.padding(start = 8.dp), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 Row(Modifier.fillMaxWidth().padding(vertical = 14.dp), verticalAlignment = Alignment.CenterVertically) {
                     ActionIcon(Icons.Rounded.Shuffle, "Shuffle playlist", tint = if (vm.shuffle) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface) {
@@ -160,7 +166,7 @@ fun PlaylistScreen(vm: SortifyViewModel) {
                 }
             }
         }
-        if (vm.detailLoading) item { Box(Modifier.fillMaxWidth().padding(40.dp), contentAlignment = Alignment.Center) { CircularProgressIndicator() } }
+        if (vm.detailLoading && playlist.songs.isEmpty()) item { SkeletonSongList(Modifier.padding(horizontal = 20.dp, vertical = 5.dp)) }
         if (vm.detailError != null) item { Box(Modifier.padding(horizontal = 20.dp)) { ErrorNotice(vm.detailError!!, vm::loadDetail) } }
         if (playlist.songs.isEmpty() && !vm.detailLoading && vm.detailError == null) item { EmptyState(Icons.AutoMirrored.Rounded.PlaylistAdd, "Every mix starts somewhere", "Find a song, open its options, and add it to this playlist.", "Find songs") { vm.switchTab(Screen.Search) } }
         items(playlist.songs, key = { it.id }) { song -> SongRow(song, vm, playlist.songs, Modifier.padding(horizontal = 20.dp, vertical = 5.dp)) }

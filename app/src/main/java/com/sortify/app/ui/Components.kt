@@ -27,6 +27,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -47,12 +50,15 @@ private object ImageCache {
     }
 }
 
+private data class ArtworkState(val bitmap: Bitmap? = null, val loading: Boolean = false)
+
 @Composable
 fun Artwork(model: String, modifier: Modifier = Modifier, description: String? = null, circle: Boolean = false, cornerRadius: Dp = 14.dp) {
     val context = LocalContext.current
-    val bitmap by produceState<Bitmap?>(initialValue = ImageCache.memory.get(model), model) {
-        if (model.isBlank()) { value = null; return@produceState }
-        value = withContext(Dispatchers.IO) {
+    // Reset immediately when a reused row receives a different image model.
+    val artwork by key(model) { produceState(initialValue = ArtworkState(ImageCache.memory.get(model), loading = model.isNotBlank())) {
+        if (model.isBlank()) { value = ArtworkState(); return@produceState }
+        val bitmap = withContext(Dispatchers.IO) {
             runCatching {
                 ImageCache.memory.get(model) ?: if (model.startsWith("artwork/")) {
                     context.assets.open(model).use(BitmapFactory::decodeStream)
@@ -77,9 +83,11 @@ fun Artwork(model: String, modifier: Modifier = Modifier, description: String? =
                 }
             }.getOrNull()?.also { ImageCache.memory.put(model, it) }
         }
-    }
+        value = ArtworkState(bitmap)
+    } }
     Box(modifier.clip(if (circle) CircleShape else RoundedCornerShape(cornerRadius)).background(MaterialTheme.colorScheme.surfaceVariant), contentAlignment = Alignment.Center) {
-        if (bitmap != null) Image(bitmap!!.asImageBitmap(), description, Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
+        if (artwork.bitmap != null) Image(artwork.bitmap!!.asImageBitmap(), description, Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
+        else if (artwork.loading) SkeletonBlock(Modifier.fillMaxSize(), shape = if (circle) CircleShape else RoundedCornerShape(cornerRadius))
         else Icon(Icons.Rounded.MusicNote, description, Modifier.size(32.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
@@ -120,8 +128,13 @@ fun SectionTitle(title: String, action: String? = null, onAction: () -> Unit = {
 
 @Composable
 fun PlayButton(playing: Boolean = false, size: Dp = 60.dp, loading: Boolean = false, onClick: () -> Unit) {
-    FilledIconButton(onClick, Modifier.size(size), colors = IconButtonDefaults.filledIconButtonColors(containerColor = SortifyGreen, contentColor = Color(0xFF00210D))) {
-        if (loading) CircularProgressIndicator(Modifier.size(25.dp), color = Color(0xFF00210D), strokeWidth = 2.dp)
+    FilledIconButton(onClick, Modifier.size(size).semantics {
+        if (loading) {
+            contentDescription = if (playing) "Pause" else "Play"
+            stateDescription = "Buffering"
+        }
+    }, colors = IconButtonDefaults.filledIconButtonColors(containerColor = SortifyGreen, contentColor = Color(0xFF00210D))) {
+        if (loading) SkeletonBlock(Modifier.size(25.dp), shape = CircleShape, color = Color(0xFF00210D).copy(alpha = .35f))
         else Icon(if (playing) Icons.Rounded.Pause else Icons.Rounded.PlayArrow, if (playing) "Pause" else "Play", Modifier.size(size * .53f))
     }
 }

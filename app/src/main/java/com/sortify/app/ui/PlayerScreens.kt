@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.PlaylistAdd
@@ -20,6 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.Player
@@ -39,7 +43,10 @@ fun MiniPlayer(vm: SortifyViewModel, modifier: Modifier = Modifier) {
                     Text(song.artist, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
                 ActionIcon(if (vm.isFavorite(song)) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder, if (vm.isFavorite(song)) "Unlike song" else "Like song", tint = if (vm.isFavorite(song)) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface) { vm.toggleFavorite(song) }
-                if (vm.buffering) CircularProgressIndicator(Modifier.padding(12.dp).size(24.dp), strokeWidth = 2.dp)
+                if (vm.buffering) IconButton(vm::togglePlay, Modifier.size(48.dp).semantics {
+                    contentDescription = if (vm.playing) "Pause" else "Play"
+                    stateDescription = "Buffering"
+                }) { SkeletonBlock(Modifier.size(24.dp), shape = CircleShape, color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = .35f)) }
                 else ActionIcon(if (vm.playing) Icons.Rounded.Pause else Icons.Rounded.PlayArrow, if (vm.playing) "Pause" else "Play", onClick = vm::togglePlay)
             }
             LinearProgressIndicator(progress = { if (vm.duration > 0) vm.position.toFloat() / vm.duration else 0f }, Modifier.fillMaxWidth().height(2.dp).padding(horizontal = 12.dp), color = MaterialTheme.colorScheme.primary, trackColor = MaterialTheme.colorScheme.outlineVariant)
